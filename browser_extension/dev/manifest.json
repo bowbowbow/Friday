@@ -1,10 +1,10 @@
 {
   "version": "0.1.0",
-  "name": "멘탈보호기",
+  "name": "Friday",
   "manifest_version": 2,
-  "description": "멘탈보호기 개발모드",
+  "description": "Friday",
   "browser_action": {
-    "default_title": "멘탈보호기",
+    "default_title": "Friday",
     "default_popup": "popup.html"
   },
   "icons": {
