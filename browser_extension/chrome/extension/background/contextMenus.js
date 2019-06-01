@@ -1,5 +1,5 @@
 let windowId = 0;
-const CONTEXT_MENU_ID = 'Friday_context_menu';
+const CONTEXT_MENU_ID = 'Friday-context-menu';
 
 function closeIfExist() {
   if (windowId > 0) {
@@ -30,13 +30,14 @@ chrome.contextMenus.create({
   title: 'Friday',
   contexts: ['all'],
   documentUrlPatterns: [
-    "http://*/*",
-    "https://*/*"
-  ]
+    'http://*/*',
+    'https://*/*',
+  ],
 });
 
 chrome.contextMenus.onClicked.addListener((event) => {
-  if (event.menuItemId === CONTEXT_MENU_ID) {
-    popWindow('open');
-  }
+  console.log('event :', event);
+  // if (event.menuItemId === CONTEXT_MENU_ID) {
+  //   popWindow('open');
+  // }
 });
