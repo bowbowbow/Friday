@@ -6,3 +6,4 @@ chromedriver.exe
 
 browser_extension/build/
 browser_extension/node_modules/
+browser_extension/package-lock.json
