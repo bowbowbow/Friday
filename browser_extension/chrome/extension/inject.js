@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-// console.log('inject contents script to coinpan.com');
+console.log('inject.js is loaded');
 
 let beforeKeywords = [];
 
@@ -51,18 +51,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// window.addEventListener('load', () => {
-//   // const injectDOM = document.createElement('div');
-//   // injectDOM.className = 'inject-react-example';
-//   // injectDOM.style.textAlign = 'center';
-//   // document.body.appendChild(injectDOM);
-//
-//   console.log('inject contents script to coinpan.com');
-//
-//   // $('div:contains("코스모")').css('background-color', 'black');
-//
-//   // $('td:contains("코스모")').parent('tr').hide();
-//   $('a:contains("코스모")').hide();
-//
-//   console.log( $('div:contains("코스모")'));
-// });
+window.addEventListener('load', () => {
+  const injectDOM = document.createElement('div');
+  injectDOM.className = 'inject-react';
+  document.body.appendChild(injectDOM);
+
+  console.log('[Friday] inject contents script');
+
+});

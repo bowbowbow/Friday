@@ -3,7 +3,7 @@ doctype html
 html
   head
     meta(charset='UTF-8')
-    title Redux TodoMVC Example (Inject)
+    title Friday Extension Popup
     style.
       html, body {
         background-color: rgba(0,0,0,0)
@@ -11,5 +11,5 @@ html
   body
     #root
     if env !== 'prod'
-      script(src='chrome-extension://lmhkpmbekcpmknklioeibfkpmmfibljd/js/redux-devtools-extension.js')
+      script(src='chrome-extension://einpenlebdkihfkcinalemmfijdcmabp/js/redux-devtools-extension.js')
     script(src=env == 'prod' ? '/js/app.bundle.js' : 'https://localhost:3000/js/app.bundle.js')
