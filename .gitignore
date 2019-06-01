@@ -2,6 +2,7 @@ stanford-corenlp-full-2018-10-05/
 .idea/
 __pycache__/
 venv/
+dat/
 chromedriver.exe
 
 browser_extension/build/
