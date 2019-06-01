@@ -4,3 +4,8 @@ __pycache__/
 venv/
 dat/
 chromedriver.exe
+
+browser_extension/build/
+browser_extension/dev/
+browser_extension/node_modules/
+browser_extension/package-lock.json
