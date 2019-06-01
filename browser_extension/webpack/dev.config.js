@@ -86,7 +86,7 @@ const baseDevConfig = () => ({
 const injectPageConfig = baseDevConfig();
 injectPageConfig.entry = [
   customPath,
-  path.join(__dirname, '../chrome/extension/inject'),
+  path.join(__dirname, '../chrome/extension/inject/index.js'),
 ];
 delete injectPageConfig.hotMiddleware;
 delete injectPageConfig.module.rules[0].options;
