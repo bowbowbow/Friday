@@ -1,0 +1,78 @@
+@import '../color';
+
+@margin-side: 25px;
+
+:global {
+  .ant-switch-checked {
+    background-color: @oc-green-6;
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(64, 192, 87, 0.2);
+    }
+  }
+  .ant-alert {
+    line-height: 1.6;
+  }
+  .ant-tag {
+    margin-bottom: 9px;
+  }
+}
+
+.app {
+  position: relative;
+  > .title {
+    font-size: 24px;
+    color: @oc-gray-8;
+    font-weight: 500;
+    padding: 30px @margin-side 12px @margin-side;
+
+    > .power {
+      margin-left: 10px;
+      margin-top: -3px;
+    }
+  }
+  > .description {
+    padding: 0 @margin-side;
+    font-size: 13px;
+    color: @oc-gray-6;
+    font-weight: 500;
+    i {
+      font-size: 15px;
+    }
+  }
+  > .section {
+    margin-top: 20px;
+    > .header {
+      padding: 0 @margin-side;
+      > .title {
+        font-size: 16px;
+        color: @oc-gray-8;
+        font-weight: 500;
+        > .badge {
+          margin-top: -3px;
+          margin-left: 2px;
+        }
+      }
+      > .description {
+        margin-top: 5px;
+        font-size: 13px;
+        color: @oc-gray-6;
+        font-weight: 500;
+      }
+    }
+    > .body {
+      height: 134px;
+      overflow-y: scroll;
+      margin-top: 5px;
+      padding: 10px @margin-side 2px @margin-side;
+      background-color: white;
+      > .tagInput {
+        margin-bottom: 9px;
+      }
+    }
+  }
+  > .info {
+    font-size: 11px;
+    color: @oc-gray-6;
+    padding: 10px @margin-side 7px @margin-side;
+  }
+}
