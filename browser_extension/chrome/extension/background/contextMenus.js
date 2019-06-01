@@ -1,5 +1,5 @@
 let windowId = 0;
-const CONTEXT_MENU_ID = 'context_menu';
+const CONTEXT_MENU_ID = 'Friday_context_menu';
 
 function closeIfExist() {
   if (windowId > 0) {
@@ -27,10 +27,11 @@ function popWindow(type) {
 
 chrome.contextMenus.create({
   id: CONTEXT_MENU_ID,
-  title: 'Mental Protector',
+  title: 'Friday',
   contexts: ['all'],
   documentUrlPatterns: [
-    'https://github.com/*'
+    "http://*/*",
+    "https://*/*"
   ]
 });
 
