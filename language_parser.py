@@ -110,7 +110,10 @@ def main_helper(element_tuple, language, nlp, allennlp, driver, driver_path, run
     print('\nSTEP6: Make python code')
     for func in funcs: codes += func.code_string + '\n'
     num = len(os.listdir('./output/'))
-    with open('./output/testfile_{}.py'.format(num), 'w') as f: f.write(codes)
+    fname = './output/testfile_{}.py'.format(num)
+    print("output file name: {}".format(fname))
+    print('\n\noutput code: \n{}'.format(codes))
+    with open(fname, 'w') as f: f.write(codes)
     return funcs, codes
 
 
