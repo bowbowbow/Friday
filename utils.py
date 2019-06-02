@@ -3,13 +3,13 @@ import numpy as np
 from stanfordcorenlp import StanfordCoreNLP as nlp
 from allennlp.predictors.predictor import Predictor
 from selenium import webdriver
+from func import KeywordManager
 
 
 class PathSaver:
     """ Save the external path information """
     def __init__(self):
         self.parser_path = './stanford-corenlp-full-2018-10-05/'
-        self.embed_path = './dat/glove.840B.300d.txt'
         self.driver_path = './dat/chromedriver.exe'
         self.allen_path = "https://s3-us-west-2.amazonaws.com/allennlp/models/srl-model-2018.05.25.tar.gz"
 
@@ -32,22 +32,6 @@ def get_driver(driver_path):
     driver.implicitly_wait(3)
     driver.get('https://google.com')
     return driver
-
-def get_word_matrix(glove_path):
-    """ Load word embedding matrix """
-    map = dict()
-    with open(glove_path, 'r', encoding='utf8') as f:
-        ls = f.readlines()
-        for idx,line in enumerate(ls):
-            line = line.strip().split()
-            try:
-                assert len(line) == 301  # word embedding vector length + word
-            except:
-                continue
-            vec = np.array([float(el) for el in line[1:]], dtype=np.float32)
-            map[line[0]] = vec
-    return map
-
 
 def parse_allen_tag(words, tags):
     """
@@ -80,6 +64,16 @@ def parse_allen_tag(words, tags):
 
 
 def check_user_generated_keyword(tok):
-    if tok[0]!='"' and tok[-1] !='"':
+    if tok[0] != '"' and tok[-1] != '"':
         return False
     return True
+
+def make_basic_code(raw_input, driver_path):
+    code = ''
+    code += 'from selenium import webdriver\n\n'
+    code += "Input = '{}'\n\n".format(raw_input)
+    code += 'driver_path = "'"{}"'"\n'.format(driver_path)
+    code += 'driver = webdriver.Chrome(driver_path)\n'
+    code += 'driver.implicitly_wait(3)\n'
+    code += "driver.get('https://google.com')\n"
+    return code
