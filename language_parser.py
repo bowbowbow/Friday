@@ -2,12 +2,13 @@ import os
 import json
 import argparse
 from pprint import pprint
-from nltk import Tree
-from utils import get_stanford_parser, PathSaver, get_driver, check_user_generated_keyword, get_allen_parser, parse_allen_tag, make_basic_code
+import nltk
+from utils import PathSaver, get_driver, check_user_generated_keyword, get_allen_parser, parse_allen_tag, make_basic_code, get_stanford_parser
 from func import Func
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--run_selenium", type=bool, default=False, help='If True, also run selenium code. If False, only makes python output function.')
+parser.add_argument("--use_corenlp", type=bool, default=False, help='')
 args = parser.parse_args()
 
 
@@ -17,14 +18,13 @@ def sent2clauses(sent, parser):
     One clause should be matched with one Selenium code.
     Input:
         sent(str): user-generated one raw sentence
-        parser(StanfordCoreNLP parser): Parser object
+        parser(StanfordCoreNLP or NLTK parser): Parser object
     Output:
         clauses(list of str): list of clauses(one Selenium code per clause)
     """
-    clauses = []
-
-    tree = parser.parse(sent)
-    res = Tree.fromstring(tree)
+    # clauses = []
+    # tree = parser.parse(sent)
+    # res = nltk.Tree.fromstring(tree)
 
     # TODO: Find better ways to split the sentence into clauses, like parsing.
     clauses = [clause.strip() for clause in sent.split('and')]
@@ -53,7 +53,10 @@ def get_function_class(clause, nlp, run_selenium):
         func: 'func' class with assignd function type
     """
     assert isinstance(clause, str)
-    pos_tag_clause = nlp.pos_tag(clause)
+    if args.use_corenlp:
+        pos_tag_clause = nlp.pos_tag(clause)
+    else:
+        pos_tag_clause = nlp.pos_tag(nlp.word_tokenize(clause))
     func = Func(clause, pos_tag_clause, run_selenium)
     func.assign_func_name()
     return func
@@ -91,7 +94,7 @@ def main_helper(element_tuple, language, nlp, allennlp, driver, driver_path, run
         codes: List of selenium code that are matched with 'language'
     """
     codes = make_basic_code(language, './.' + driver_path)
-    print("STEP0: Raw input\n{}\n".format(language))
+    print("\n\n\nSTEP0: Raw input\n{}\n".format(language))
     clauses = sent2clauses(language, nlp)
     print('STEP1: split language into clauses.\n{}\n'.format(clauses))
     funcs = [get_function_class(clause, nlp, run_selenium) for clause in clauses]
@@ -139,9 +142,10 @@ def main():
     """
     # If True, also run selenium code. Else, only make output python file.
     run_selenium = args.run_selenium
+    use_stanford_corenlp = args.use_corenlp
     pathsaver = PathSaver()
 
-    nlp = get_stanford_parser(pathsaver.parser_path)
+    nlp = nltk if not use_stanford_corenlp else get_stanford_parser(pathsaver.parser_path)
     allennlp = get_allen_parser(pathsaver.allen_path)
 
     sample_sents = ['Enter the "KAIST" in "SearchBox" and click the "Search" button',

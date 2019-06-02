@@ -1,9 +1,7 @@
 import os
-import numpy as np
 from stanfordcorenlp import StanfordCoreNLP as nlp
 from allennlp.predictors.predictor import Predictor
 from selenium import webdriver
-from func import KeywordManager
 
 
 class PathSaver:
