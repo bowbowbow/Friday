@@ -8,7 +8,7 @@ module.exports = {
   entry: {
     app: [customPath, path.join(__dirname, '../chrome/extension/app')],
     background: [customPath, path.join(__dirname, '../chrome/extension/background')],
-    inject: [customPath, path.join(__dirname, '../chrome/extension/inject')]
+    inject: [customPath, path.join(__dirname, '../chrome/extension/inject/index.js')]
   },
   output: {
     path: path.join(__dirname, '../build/js'),
@@ -59,13 +59,7 @@ module.exports = {
         test: /\.css/,
         use: [
           'style-loader', // creates style nodes from JS strings
-          'css-loader',
-          // {
-          //   loader: 'postcss-loader',
-          //   options: {
-          //     plugins: () => [autoprefixer],
-          //   },
-          // },
+          'css-loader'
         ],
       }],
   },

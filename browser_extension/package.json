@@ -67,6 +67,7 @@
     "webpack-httpolyglot-server": "^0.3.0"
   },
   "dependencies": {
+    "@medv/finder": "^1.1.1",
     "antd": "^3.15.0",
     "antd-mobile": "^2.2.5",
     "autoprefixer": "^7.2.5",
