@@ -52,7 +52,7 @@ Friday/
 
 ## Build
 
-- Run language2Selenium. If use StanfordcoreNLP instead of NLTK, please install stanfordcorenlp and download the model.
+- Run language2Selenium. If use StanfordcoreNLP instead of NLTK, please install stanfordcorenlp and download the model and set --use_corenlp as True.
 
   ```
   python language_parser.py [--run_selenium={True,False}] \
