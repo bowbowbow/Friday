@@ -123,7 +123,7 @@ def read_extension_output():
     Input:
         maybe json path or not?
     Output:
-        foo(dict): selenium nickname-selector json
+        foo(tuple): list of selenium nickname-selector tuple
         bar(str): raw language to use
     """
     selector_json_fname = 'foo.json'
@@ -135,6 +135,7 @@ def read_extension_output():
         bar = f.readlines()
         assert len(bar) == 1
         bar = bar[0].strip()
+    foo = list(foo.items())  # dict to tuple
     return foo, bar
 
 
