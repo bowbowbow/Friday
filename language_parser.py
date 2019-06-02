@@ -1,10 +1,14 @@
 import os
-import time
+import json
+import argparse
 from pprint import pprint
 from nltk import Tree
-from nltk.treeprettyprinter import TreePrettyPrinter
-from utils import get_stanford_parser, PathSaver, get_driver, check_user_generated_keyword, get_allen_parser, parse_allen_tag
+from utils import get_stanford_parser, PathSaver, get_driver, check_user_generated_keyword, get_allen_parser, parse_allen_tag, make_basic_code
 from func import Func
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--run_selenium", type=bool, default=False, help='If True, also run selenium code. If False, only makes python output function.')
+args = parser.parse_args()
 
 
 def sent2clauses(sent, parser):
@@ -39,7 +43,7 @@ def sent2clauses(sent, parser):
     return new_clauses
 
 
-def get_function_class(clause, nlp):
+def get_function_class(clause, nlp, run_selenium):
     """
     Read clause and return the Function class with assign the function type.
     Input:
@@ -50,7 +54,7 @@ def get_function_class(clause, nlp):
     """
     assert isinstance(clause, str)
     pos_tag_clause = nlp.pos_tag(clause)
-    func = Func(clause, pos_tag_clause)
+    func = Func(clause, pos_tag_clause, run_selenium)
     func.assign_func_name()
     return func
 
@@ -76,7 +80,7 @@ def find_function_argument(func, allennlp):
     return func
 
 
-def main_helper(element_tuple, language, nlp, allennlp, driver):
+def main_helper(element_tuple, language, nlp, allennlp, driver, driver_path, run_selenium):
     """
     Main function of language part.
     Input:
@@ -86,33 +90,70 @@ def main_helper(element_tuple, language, nlp, allennlp, driver):
     Output:
         codes: List of selenium code that are matched with 'language'
     """
-    codes = []
+    codes = make_basic_code(language, './.' + driver_path)
     print("STEP0: Raw input\n{}\n".format(language))
     clauses = sent2clauses(language, nlp)
     print('STEP1: split language into clauses.\n{}\n'.format(clauses))
-    funcs = [get_function_class(clause, nlp) for clause in clauses]
+    funcs = [get_function_class(clause, nlp, run_selenium) for clause in clauses]
     print("STEP2: Assign the selenium function type for each of clauses.")
     for idx, f in enumerate(funcs): print("{}:{} => {}".format(idx, f.raw_clause, f.func_name))
     print("\nSTEP3: Find argument for each function.")
     funcs = [find_function_argument(func, allennlp) for func in funcs]
     print("\nSTEP4: Make Selenium code with name-tuple.")
     for func in funcs: func.make_selenium_code(element_tuple, driver)
-    print("\nSTEP5: Run code!")
-    for func in funcs: func.run_selenium_code()
-    return funcs
+    print("\nSTEP5: Run code! (Optional)")
+    if run_selenium:
+        for func in funcs: func.run_selenium_code()
+    print('\nSTEP6: Make python code')
+    for func in funcs: codes += func.code_string + '\n'
+    num = len(os.listdir('./output/'))
+    with open('./output/testfile{}.py'.format(num), 'w') as f: f.write(codes)
+    return funcs, codes
 
 
+def read_extension_output():
+    """
+    Read json file from Chrome extension
+    Input:
+        maybe json path or not?
+    Output:
+        foo(dict): selenium nickname-selector json
+        bar(str): raw language to use
+    """
+    selector_json_fname = 'foo.json'
+    raw_input_txt = 'bar.json'
+
+    with open(selector_json_fname, 'r') as f:
+        foo = json.load(f)
+    with open(raw_input_txt, 'r') as f:
+        bar = f.readlines()
+        assert len(bar) == 1
+        bar = bar[0].strip()
+    return foo, bar
 
 
-if __name__ == '__main__':
+def main():
+    """
+    Main Function!
+    make output file at /output/
+    """
+    # If True, also run selenium code. Else, only make output python file.
+    run_selenium = args.run_selenium
     pathsaver = PathSaver()
+
     nlp = get_stanford_parser(pathsaver.parser_path)
     allennlp = get_allen_parser(pathsaver.allen_path)
 
-    sample_sents = ['Refresh the website and move to "https://www.naver.com/".',
-                    'Enter the "KAIST" in "SearchBox" and click the "Search" button', 'Wait the "3 seconds".']
+    sample_sents = ['Enter the "KAIST" in "SearchBox" and click the "Search" button',
+                    'Wait the "3 seconds".',
+                    'Refresh the website and move to "https://www.naver.com/".']
     sample_tuple = [("SearchBox", 'q'), ("Search", 'btnK')]
+    # TODO: Change the above sample sents and tuple into Chrome extension output using 'read_extension_output()'
 
     for sample_sent in sample_sents:
-        driver = get_driver(pathsaver.driver_path)
-        main_helper(sample_tuple, sample_sent, nlp, allennlp, driver)
+        driver = get_driver(pathsaver.driver_path) if run_selenium else None
+        main_helper(sample_tuple, sample_sent, nlp, allennlp, driver, pathsaver.driver_path, run_selenium)
+
+
+if __name__ == '__main__':
+    main()

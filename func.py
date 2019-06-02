@@ -1,26 +1,29 @@
+import os
+import pickle
 import time
-
+import operator
+import numpy as np
 
 class KeywordManager:
     def __init__(self):
         self.func2keyword = {
             'click':['click', 'touch'],
-            'wait':['wait','sleep'],
+            'wait':['wait', 'sleep'],
             'write':['enter', 'put', 'write'],
-            'contain_value':['have','has','contain'],
+            'contain_value': ['have', 'has', 'contain'],
             'refresh':['refresh'],
-            'move_url':['go','move']
+            'move_url': ['go', 'move']
         }
         self.keyword_list = [el for li in self.func2keyword.values() for el in li]
         assert len(self.keyword_list) == len(list(set(self.keyword_list)))
         self.keyword2func = {}
-        for k,vlist in self.func2keyword.items():
+        for k, vlist in self.func2keyword.items():
             for v in vlist:
                 self.keyword2func[v] = k  # reverse of func2keyword for each keyword
 
 
 class Func:
-    def __init__(self, clause, pos_tag_clause):
+    def __init__(self, clause, pos_tag_clause, run_selenium):
         self.keyman = KeywordManager()
         self.func_name = None
         self.func_word = None
@@ -31,6 +34,8 @@ class Func:
         self.pos_tag_clause = pos_tag_clause
         self.selenium_func, self.selenium_argument = None, None
         self.code_string = ''
+        self.embed_manager = None  # Lazy loading only when need
+        self.run_selenium = run_selenium
 
     def pretty_print(self):
         """
@@ -56,7 +61,8 @@ class Func:
         find_keyword = False
         verb_list = []
         for (word,tag) in self.pos_tag_clause:
-            verb_list.append(word)
+            if tag[0] == 'V':
+                verb_list.append(word)
             if word in self.keyman.keyword_list:
                 if find_keyword:
                     raise ValueError("More than one keyword is exists, {} and {}".format(self.func_word, word))
@@ -67,8 +73,19 @@ class Func:
 
         # Exact match with keyword is failed.
         if not find_keyword:
-            # TODO: Use word embedding to match the function based on similarity.
-            raise ValueError
+            print("[Warning] Use word embedding to decide the function type")
+            self.embed_manager = EmbedManager()
+            score_save = dict()
+            if len(verb_list) == 0: raise ValueError("No keyword and verb to decide the function type.")
+            for verb in verb_list:
+                scores = self.embed_manager.get_func_by_emb(verb)
+                for k in scores:
+                    if k in score_save: score_save[k] += score_save[k]
+                    else: score_save[k] = scores[k]
+                scores = sorted(scores.items(), key=operator.itemgetter(1), reverse=True)
+                self.func_word = verb_list[0]
+                self.func_name = scores[0][0]
+                if self.func_name in ['write', 'wait']: self.need_arguments = True
 
     def find_func_target(self, parsed):
         """
@@ -125,29 +142,27 @@ class Func:
         element_id = self.find_target_element_for_selenium_with_nametuple(name_tuple) if self.target_name is not None else None
         argument = self.find_argument_for_selenium_with_nametuple(name_tuple) if len(self.arguments_list) != 0 else None
 
+        self.code_string += '\n# {}\n'.format(self.raw_clause)
         if self.func_name == 'click':
-            element = driver.find_element_by_name(element_id)
-            self.code_string += 'driver.find_element_by_name({})'.format(element_id)
-            func = element.click
-            self.code_string += '.click()'
+            if self.run_selenium: func = driver.find_element_by_name(element_id).click
+            self.code_string += 'driver.find_element_by_name("{}").click()'.format(element_id)
         elif self.func_name == 'wait':
-            func = time.sleep
+            if self.run_selenium: func = time.sleep
             args = argument
-            self.code_string = 'time.sleep({})'.format(args)
+            self.code_string += 'import time\ntime.sleep({})'.format(args)
         elif self.func_name == 'write':
-            element = driver.find_element_by_name(element_id)
-            func = element.send_keys
+            if self.run_selenium: func = driver.find_element_by_name(element_id).send_keys
             args = argument
-            self.code_string = 'driver.find_element_by_name({}).send_keys({})'.format(element_id, args)
+            self.code_string += "driver.find_element_by_name('{}').send_keys('{}')".format(element_id, args)
         elif self.func_name == 'contain_value':
             pass
         elif self.func_name == 'refresh':
-            func = driver.refresh
-            self.code_string = 'driver.refresh()'
+            if self.run_selenium: func = driver.refresh
+            self.code_string += 'driver.refresh()'
         elif self.func_name == 'move_url':
-            func = driver.get
+            if self.run_selenium: func = driver.get
             args = argument
-            self.code_string = 'driver.get({})'.format(args)
+            self.code_string += "driver.get('{}')".format(args)
         self.selenium_func = func
         self.selenium_argument = args
 
@@ -196,3 +211,87 @@ class Func:
 
         target_id = name_tuple[target_token]
         return target_id
+
+class EmbedManager:
+    def __init__(self):
+        self.keyman = KeywordManager()
+        self.save_path = './dat/emb_dump.pck'
+        self.embed_path = './dat/glove.6B.200d.txt'
+        self.keyword_vector = dict()
+        self.matrix = dict()
+        self.get_vector_and_word()
+
+    def get_vector_and_word(self):
+        if os.path.exists(self.save_path):
+            with open(self.save_path, 'rb') as f:
+                self.keyword_vector, self.matrix = pickle.load(f)
+        else:
+            self.keyword_vector, self.matrix = self.save_keyword_vector_and_word_list()
+
+    def save_keyword_vector_and_word_list(self):
+        """ Save the vector of keyword """
+        keyword_vector = dict()
+        mat = self.get_word_matrix(self.embed_path)
+        self.matrix = mat
+        for func_name in self.keyman.func2keyword:
+            keyword_vector[func_name] = self.keyman.func2keyword[func_name]
+        keyword_vector = self.get_func_name_vector_representation(keyword_vector)
+        with open(self.save_path, 'wb') as f:
+            pickle.dump([keyword_vector, mat], f)
+        return keyword_vector, mat
+
+    def get_func_by_emb(self, word):
+        """
+        When keyword of input natural language is not specified, use word embedding similarity to decide.
+        Input:
+            word(str): verb word of natural language
+        Output
+            tuple of (func_name(str), similarity score(float))
+        """
+        word_vector = self.matrix[word]
+        word_vector = word_vector/np.linalg.norm(word_vector)
+        sim_dict = {}
+        for func_name in self.keyword_vector:
+            sim = self.cosine_similarity(self.keyword_vector[func_name], word_vector)
+            sim_dict[func_name] = sim
+        #sorted_sim = sorted(sim_dict.items(), key=operator.itemgetter(1), reverse=True)
+        return sim_dict
+
+    def get_func_name_vector_representation(self, keyword_vector):
+        """
+        Make each keyword into vector for further.
+        Input:
+            keyword_vector(dict[func_name: [keyword1, keyword2..]):
+        Output:
+            keyword_vector(dict[func_name: average of each keyword vector])
+        """
+        vector_map = dict()
+        for func_name in keyword_vector:
+            keyword_list = keyword_vector[func_name]
+            vectors = np.asarray([self.matrix[keyword] for keyword in keyword_list])
+            vector = np.mean(vectors, axis=0)
+            vector = vector/np.linalg.norm(vector)
+            vector_map[func_name] = vector
+        return vector_map
+
+    @staticmethod
+    def cosine_similarity(a, b):
+        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+    @staticmethod
+    def get_word_matrix(glove_path):
+        """ Load word embedding matrix """
+        map = dict()
+        with open(glove_path, 'r', encoding='utf8') as f:
+            ls = f.readlines()
+            for idx, line in enumerate(ls):
+                if idx % 10000 == 0:
+                    print("{}/{}".format(idx, len(ls)))
+                line = line.strip().split()
+                try:
+                    assert len(line) == 201  # word embedding vector length + word
+                except:
+                    continue
+                vec = np.array([float(el) for el in line[1:]], dtype=np.float32)
+                map[line[0]] = vec
+        return map
