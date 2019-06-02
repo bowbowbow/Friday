@@ -6,17 +6,22 @@ This is the project implementation of team 5 for KAIST, CS453 Automated Software
 
 ## Prerequisites
 
-- Python3.6
-- Numpy
+- python3.6
+- numpy
 - torch
-- AllenNLP
-- stanfordcorenlp
+- allennlp
 - nltk
+- (Optional: stanfordcorenlp)
 
 
 
 - Download `glove.6B.200d.txt` from [here](http://nlp.stanford.edu/data/glove.6B.zip) and locate it into `/dat` directory.
+
 - Download appropriate version of  `chromedriver.exe` with your Chrome version and locate into `/dat` directory.
+
+- (Optional: Download stanfordcorenlp model from [here](http://nlp.stanford.edu/software/stanford-corenlp-full-2018-10-05.zip) and locate in project directory. If use NLTK, don't need to download this.)
+
+  
 
 ## Package Structure
 
@@ -47,7 +52,12 @@ Friday/
 
 ## Build
 
-TBD
+- Run language2Selenium. If use StanfordcoreNLP instead of NLTK, please install stanfordcorenlp and download the model.
+
+  ```
+  python language_parser.py [--run_selenium={True,False}] \
+                            [--use_corenlp={True,False}]
+  ```
 
 ## Examples
 
