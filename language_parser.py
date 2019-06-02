@@ -99,6 +99,10 @@ def main_helper(element_tuple, language, nlp, allennlp, driver):
     for func in funcs: func.make_selenium_code(element_tuple, driver)
     print("\nSTEP5: Run code!")
     for func in funcs: func.run_selenium_code()
+    return funcs
+
+
+
 
 if __name__ == '__main__':
     pathsaver = PathSaver()
@@ -112,4 +116,3 @@ if __name__ == '__main__':
     for sample_sent in sample_sents:
         driver = get_driver(pathsaver.driver_path)
         main_helper(sample_tuple, sample_sent, nlp, allennlp, driver)
-        input()
