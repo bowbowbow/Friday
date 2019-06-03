@@ -1,0 +1,15 @@
+{
+  "selectors": [
+    {
+      "path": ".gLFyf",
+      "location": "https://www.google.com/",
+      "tagId": 1
+    },
+    {
+      "path": "center:nth-child(1) > .gNO89b",
+      "location": "https://www.google.com/",
+      "tagId": 2
+    }
+  ],
+  "text": "Enter the \"Iron man\" in #1 and click the #2.\n'Wait the \"3 seconds\" and Check if \"Robert Downey\" is on the page"
+}=
