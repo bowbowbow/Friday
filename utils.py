@@ -24,11 +24,11 @@ def get_allen_parser(parser_path):
     return predictor
 
 
-def get_driver(driver_path):
+def get_driver(driver_path, home_url='https://google.com'):
     """ Return the Selenium chrome driver object """
     driver = webdriver.Chrome(driver_path)
-    driver.implicitly_wait(3)
-    driver.get('https://google.com')
+    driver.implicitly_wait(1)
+    driver.get(home_url)
     return driver
 
 def parse_allen_tag(words, tags):
@@ -69,9 +69,10 @@ def check_user_generated_keyword(tok):
 def make_basic_code(raw_input, driver_path):
     code = ''
     code += 'from selenium import webdriver\n\n'
+    while '\n' in raw_input: raw_input = raw_input.replace('\n', ' and ')
     code += "Input = '{}'\n\n".format(raw_input)
     code += 'driver_path = "'"{}"'"\n'.format(driver_path)
     code += 'driver = webdriver.Chrome(driver_path)\n'
     code += 'driver.implicitly_wait(3)\n'
-    code += "driver.get('https://google.com')\n"
+    # code += "driver.get('https://google.com')\n"
     return code
