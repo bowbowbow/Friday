@@ -14,7 +14,7 @@ This project is being developed in Python 3.6.
    pip install numpy torch allennlp nltk stanfordcorenlp stanfordcorenlp
    ```
    
-2. Download glove.
+2. Download [glove](https://nlp.stanford.edu/projects/glove/).
 
    ```bash
    mkdir dat
