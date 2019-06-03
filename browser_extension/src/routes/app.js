@@ -32,12 +32,13 @@ class App extends React.Component {
         </div>
         <div className={styles.section}>
           <div className={styles.header}>
-            <div className={styles.title}></div>
+            <div className={styles.title}>Data</div>
             <div className={styles.description}>
-
+              Saved elements
             </div>
           </div>
           <div className={styles.body}>
+            {JSON.stringify(app.selectors)}
           </div>
         </div>
       </div>
