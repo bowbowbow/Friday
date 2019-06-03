@@ -1,5 +1,4 @@
 const CONTEXT_MENU_ID = 'FRIDAY';
-let windowId = 0;
 
 const addSelector = tabId =>
   chrome.tabs.executeScript(tabId, {
@@ -8,7 +7,7 @@ const addSelector = tabId =>
 
 chrome.contextMenus.create({
   id: CONTEXT_MENU_ID,
-  title: 'Add this element to candidate',
+  title: 'Add this element',
   contexts: ['all'],
   documentUrlPatterns: [
     'http://*/*',
