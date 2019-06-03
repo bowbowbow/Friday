@@ -45,7 +45,6 @@ export const init = (global, state) => {
     selectedEl$.addClass('gs_copied');
 
     $(`.Friday-cancel-${tagId}`).click(function() {
-      console.log('clicked!');
       const index = $(this).attr('data-index');
       const selector = $(this).attr('data-selector');
 
@@ -55,7 +54,7 @@ export const init = (global, state) => {
       let selectors = state.selectors;
 
       const targetIndex = _.findIndex(selectors, { location: window.location.href, tagId });
-      if (targetIndex >= 0) selectors = selectors.splice(targetIndex, 0);
+      if (targetIndex >= 0) selectors.splice(targetIndex, 1);
       chrome.runtime.sendMessage({
         action: 'update_state',
         data: {
@@ -68,6 +67,8 @@ export const init = (global, state) => {
     });
   };
 
+
+  let insertIndex = 0;
   $('.Friday').remove();
   $('.gs_copied').removeClass('.gs_copied');
   const selectors = state.selectors;
@@ -75,6 +76,7 @@ export const init = (global, state) => {
   for (let i = 0; i < selectors.length; i++) {
     if (location === selectors[i].location) {
       showSelected(selectors[i].path, selectors[i].tagId);
+      insertIndex = Math.max(insertIndex, selectors[i].tagId);
     }
   }
 
@@ -100,7 +102,6 @@ export const init = (global, state) => {
     showMessage(global, message);
   }, 200);
 
-  let insertIndex = 0;
   global.addSelector = () => {
     const { selectedEl } = global;
     if (!selectedEl) {
