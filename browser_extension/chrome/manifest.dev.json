@@ -8,8 +8,7 @@
     "default_popup": "popup.html"
   },
   "icons": {
-    "16": "img/icon-16.png",
-    "48": "img/icon-48.png",
+    "32": "img/icon-32.png",
     "128": "img/icon-128.png"
   },
   "web_accessible_resources": [
