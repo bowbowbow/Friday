@@ -10,6 +10,6 @@ html
       }
   body
     #root
-    if env !== 'prod'
-      script(src='chrome-extension://einpenlebdkihfkcinalemmfijdcmabp/js/redux-devtools-extension.js')
+    //if env !== 'prod'
+    //  script(src='chrome-extension://einpenlebdkihfkcinalemmfijdcmabp/js/redux-devtools-extension.js')
     script(src=env == 'prod' ? '/js/app.bundle.js' : 'https://localhost:3000/js/app.bundle.js')

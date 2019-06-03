@@ -21,23 +21,21 @@ export const toggle = (global) => {
   }
 };
 
-let insertIndex = 0;
-const showSelected = (selector) => {
-  insertIndex += 1;
+const showSelected = (selector, tagId) => {
   const selectedEl$ = $(selector);
   const position = selectedEl$.offset();
 
   $('body').append(`
-<div class="Friday Friday-tooltip-${insertIndex}" style="position: absolute; left: ${position.left}px; top: ${position.top - 24}px; z-index: 2100000000;">
+<div class="Friday Friday-tooltip-${tagId}" style="position: absolute; left: ${position.left}px; top: ${position.top - 24}px; z-index: 2100000000;">
   <div class="Friday" style="position:relative;">
-    <div class="Friday" style="position: relative; background-color: black; color: white; padding: 1px 5px; border-radius: 4px; font-size: 12px; font-weight: 400;">FRIDAY#${insertIndex}</div>
-    <img class="Friday Friday-cancel-${insertIndex}" data-selector="${selector}" data-index="${insertIndex}" src="${chrome.extension.getURL('img/cancel.png')}" style="width: 19px; height: 19px; object-fit: cover; position: absolute; right: -22px; top: 1px; cursor: pointer;"/>
+    <div class="Friday" style="position: relative; background-color: black; color: white; padding: 1px 5px; border-radius: 4px; font-size: 12px; font-weight: 400;">${tagId}</div>
+    <img class="Friday Friday-cancel-${tagId}" data-selector="${selector}" data-index="${tagId}" src="${chrome.extension.getURL('img/cancel.png')}" style="width: 19px; height: 19px; object-fit: cover; position: absolute; right: -22px; top: 1px; cursor: pointer;"/>
   </div>
 </div>`);
 
   selectedEl$.addClass('gs_copied');
 
-  $(`.Friday-cancel-${insertIndex}`).click(function() {
+  $(`.Friday-cancel-${tagId}`).click(function() {
     const index = $(this).attr('data-index');
     const selector = $(this).attr('data-selector');
 
@@ -56,10 +54,10 @@ export const init = (global, state) => {
   );
 
   const selectors = state.selectors;
-  const location = window.location.pathname;
+  const location = window.location.href;
   for (let i = 0; i < selectors.length; i++) {
     if (location === selectors[i].location) {
-      showSelected(selectors[i].path);
+      showSelected(selectors[i].path, selectors[i].tagId);
     }
   }
 
@@ -85,6 +83,7 @@ export const init = (global, state) => {
     showMessage(global, message);
   }, 200);
 
+  let insertIndex = 0;
   global.addSelector = () => {
     const { selectedEl } = global;
     if (!selectedEl) {
@@ -93,12 +92,26 @@ export const init = (global, state) => {
     clearEl(selectedEl);
     const selector = finder(selectedEl);
 
+    insertIndex += 1;
+    const tagId = '#' + insertIndex;
+    const selectors = state.selectors;
+    selectors.push({
+      path: selector,
+      location: window.location.href,
+      tagId,
+    });
+    console.log('send Message!');
     chrome.runtime.sendMessage({
-      action: 'updateState',
-      state: state,
+      action: 'update_state',
+      data: {
+        state: {
+          ...state,
+          selectors,
+        },
+      },
     });
 
-    showSelected(selector);
+    showSelected(selector, tagId);
   };
 
   addStyle(`
