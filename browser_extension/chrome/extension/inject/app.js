@@ -65,20 +65,26 @@ export const init = global => {
     insertIndex += 1;
 
     const position = selectedEl$.offset();
+    const selector = finder(selectedEl);
+
     $('body').append(`
-<div class="Friday" style="position: absolute; left: ${position.left}px; top: ${position.top - 20}px; z-index: 2100000000;">
+<div class="Friday Friday-tooltip-${insertIndex}" style="position: absolute; left: ${position.left}px; top: ${position.top - 24}px; z-index: 2100000000;">
   <div class="Friday" style="position:relative;">
-    <div class="Friday" style="position: relative; background-color: black; color: white; padding: 3px 5px; border-radius: 4px; font-size: 12px; font-weight: 400;">FRIDAY#${insertIndex}</div>
-    <img class="Friday" src="${chrome.extension.getURL('img/cancel.png')}" style="width: 19px; height: 19px; object-fit: cover; position: absolute; right: -22px; top: 0; cursor: pointer;"/>
+    <div class="Friday" style="position: relative; background-color: black; color: white; padding: 2px 5px; border-radius: 4px; font-size: 12px; font-weight: 400;">FRIDAY#${insertIndex}</div>
+    <img class="Friday Friday-cancel-${insertIndex}" data-selector="${selector}" data-index="${insertIndex}" src="${chrome.extension.getURL('img/cancel.png')}" style="width: 19px; height: 19px; object-fit: cover; position: absolute; right: -22px; top: 1px; cursor: pointer;"/>
   </div>
 </div>`);
 
     global.copiedEl = selectedEl;
     global.copiedEl.classList.add('gs_copied');
-  };
 
-  global.removeSelector = () => {
+    $(`.Friday-cancel-${insertIndex}`).click(function() {
+      const index = $(this).attr('data-index');
+      const selector = $(this).attr('data-selector');
 
+      $(selector).removeClass('gs_copied');
+      $(`.Friday-tooltip-${index}`).remove();
+    });
   };
 
   global.copyToClipboard = () => {
