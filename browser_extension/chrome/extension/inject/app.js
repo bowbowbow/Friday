@@ -70,7 +70,7 @@ export const init = global => {
     $('body').append(`
 <div class="Friday Friday-tooltip-${insertIndex}" style="position: absolute; left: ${position.left}px; top: ${position.top - 24}px; z-index: 2100000000;">
   <div class="Friday" style="position:relative;">
-    <div class="Friday" style="position: relative; background-color: black; color: white; padding: 2px 5px; border-radius: 4px; font-size: 12px; font-weight: 400;">FRIDAY#${insertIndex}</div>
+    <div class="Friday" style="position: relative; background-color: black; color: white; padding: 1px 5px; border-radius: 4px; font-size: 12px; font-weight: 400;">FRIDAY#${insertIndex}</div>
     <img class="Friday Friday-cancel-${insertIndex}" data-selector="${selector}" data-index="${insertIndex}" src="${chrome.extension.getURL('img/cancel.png')}" style="width: 19px; height: 19px; object-fit: cover; position: absolute; right: -22px; top: 1px; cursor: pointer;"/>
   </div>
 </div>`);
