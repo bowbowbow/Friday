@@ -12,8 +12,8 @@ class PathSaver:
 
 
 def get_stanford_parser(parser_path):
-    from stanfordcorenlp import StanfordCoreNLP as nlp
     """ Return the StanfordCoreNLP parser object """
+    from stanfordcorenlp import StanfordCoreNLP as nlp
     assert os.path.exists(parser_path)
     parser = nlp(parser_path)
     return parser

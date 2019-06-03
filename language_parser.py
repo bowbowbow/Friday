@@ -3,7 +3,7 @@ import json
 import argparse
 from pprint import pprint
 import nltk
-from utils import PathSaver, get_driver, check_user_generated_keyword, get_allen_parser, parse_allen_tag, make_basic_code, get_stanford_parser
+from utils import PathSaver, get_driver, check_user_generated_keyword, get_allen_parser, parse_allen_tag, make_basic_code
 from func import Func
 
 parser = argparse.ArgumentParser()
@@ -143,7 +143,11 @@ def local_main():
     run_selenium = args.run_selenium
     use_stanford_corenlp = args.use_corenlp
     pathsaver = PathSaver()
-    nlp = nltk if not use_stanford_corenlp else get_stanford_parser(pathsaver.parser_path)
+    if not use_stanford_corenlp:
+        nlp = nltk
+    else:
+        from utils import get_stanford_parser
+        nlp = get_stanford_parser(pathsaver.parser_path)
     allennlp = get_allen_parser(pathsaver.allen_path)
 
     sample_sents = ['Enter the "KAIST" in "SearchBox" and click the "Search" button',
@@ -177,8 +181,13 @@ def api_call_main(sample, pathsaver, run_selenium, nlp, allennlp):
 def get_api_daemon_object():
     run_selenium = args.run_selenium
     use_stanford_corenlp = args.use_corenlp
+    print('use_stanford_corenlp :', use_stanford_corenlp)
     pathsaver = PathSaver()
-    nlp = nltk if not use_stanford_corenlp else get_stanford_parser(pathsaver.parser_path)
+    if not use_stanford_corenlp:
+        nlp = nltk
+    else:
+        from utils import get_stanford_parser
+        nlp = get_stanford_parser(pathsaver.parser_path)
     allennlp = get_allen_parser(pathsaver.allen_path)
     return run_selenium, use_stanford_corenlp, pathsaver, nlp, allennlp
 
