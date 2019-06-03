@@ -66,55 +66,98 @@ Friday/
 - Transform the language into Selenium code procedure
 
   ```
-  # Raw input: Enter the "KAIST" in "SearchBox" and click the "Search" button.
-  # NameTuple: [("SearchBox", 'q'), ("Search", 'btnK')]
+  Raw input: : "Open the \"https://google.com\" and Enter the \"Iron man\" in #1 and click the #2.\nWait the \"3 seconds\" and Check if \"Robert Downey\" is on the page"
+  
+  "selectors": [
+    {
+      "path": ".gLFyf",
+      "location": "https://www.google.com/",
+      "tagId": 1
+    },
+    {
+      "path": "center:nth-child(1) > .gNO89b",
+      "location": "https://www.google.com/",
+      "tagId": 2
+    }]
+
   
   STEP0: Raw input
-  Enter the "KAIST" in "SearchBox" and click the "Search" button
-  
+  Open the "https://google.com" and Enter the "Iron man" in #1 and click the #2.
+  Wait the "3 seconds" and Check if "Robert Downey" is on the page
+
   STEP1: split language into clauses.
-  ['enter the "KAIST" in "SearchBox" .', 'click the "Search" button .']
-  
+  ['open the "https://google.com" .', 'enter the "Iron man" in #1 .', 'click the #2 .', 'wait the "3 seconds" .', 'check if "Robert Downey" is on the page .']
+
   STEP2: Assign the selenium function type for each of clauses.
-  0:enter the "KAIST" in "SearchBox" . => write
-  1:click the "Search" button . => click
-  
+  0:open the "https://google.com" . => move_url
+  1:enter the "Iron man" in #1 . => write
+  2:click the #2 . => click
+  3:wait the "3 seconds" . => wait
+  4:check if "Robert Downey" is on the page . => contain_value
+
   STEP3: Find argument for each function.
-  {'ARG1': 'the " KAIST "', 'ARGM-LOC': 'in " SearchBox "', 'V': 'enter'}
+  {'ARG1': 'the " https://google.com "', 'V': 'open'}
   ------------------------------
-  Raw Input: enter the "KAIST" in "SearchBox" .
+  Raw Input: open the "https://google.com" .
+  Function Type and word: move_url  open
+  Argument Names: ['the " https://google.com "']
+  ------------------------------
+  {'ARG0': 'the " Iron man "', 'ARGM-LOC': 'in # 1', 'V': 'enter'}
+  ------------------------------
+  Raw Input: enter the "Iron man" in #1 .
   Function Type and word: write  enter
-  Target Name: in " SearchBox "
-  Argument Names: ['the " KAIST "']
+  Target Name: in # 1
+  Argument Names: ['the " Iron man "']
   ------------------------------
-  {'ARG1': 'the " Search " button', 'V': 'click'}
+  {'ARG1': 'the # 2', 'V': 'click'}
   ------------------------------
-  Raw Input: click the "Search" button .
+  Raw Input: click the #2 .
   Function Type and word: click  click
-  Target Name: the " Search " button
+  Target Name: the # 2
   ------------------------------
-  
+  {'ARGM-TMP': 'the " 3 seconds', 'V': 'wait'}
+  ------------------------------
+  Raw Input: wait the "3 seconds" .
+  Function Type and word: wait  wait
+  Argument Names: ['the " 3 seconds']
+  ------------------------------
+  {'ARG1': 'if " Robert Downey " is on the page', 'V': 'check'}
+  ------------------------------
+  Raw Input: check if "Robert Downey" is on the page .
+  Function Type and word: contain_value  check
+  Argument Names: ['if " Robert Downey " is on the page']
+  ------------------------------
+
   STEP4: Make Selenium code with name-tuple.
-  
+
   STEP5: Run code! (Optional)
-  
+
   STEP6: Make python code
   output file name: ./output/testfile_0.py
   
   
   output code: 
   from selenium import webdriver
-  
-  Input = 'Enter the "KAIST" in "SearchBox" and click the "Search" button'
-  
+
+  Input = 'Open the "https://google.com" and Enter the "Iron man" in #1 and click the #2. Wait the "3 seconds" and Check if "Robert Downey" is on the page'
+
   driver_path = "./../dat/chromedriver.exe"
   driver = webdriver.Chrome(driver_path)
-  driver.implicitly_wait(3)
+  driver.implicitly_wait(1)
+
+  # open the "https://google.com" .
   driver.get('https://google.com')
-  
-  # enter the "KAIST" in "SearchBox" .
-  driver.find_element_by_name('q').send_keys('KAIST')
-  
-  # click the "Search" button .
-  driver.find_element_by_name("btnK").click()
+
+  # enter the "Iron man" in #1 .
+  driver.find_element_by_css_selector('.gLFyf').send_keys('Iron man')
+
+  # click the #2 .
+  driver.find_element_by_css_selector("center:nth-child(1) > .gNO89b").click()
+
+  # wait the "3 seconds" .
+  import time
+  time.sleep(3)
+
+  # check if "Robert Downey" is on the page .
+  assert "Robert Downey" in driver.page_source  
   ```
