@@ -13,8 +13,6 @@ function loadScript(name, tabId, cb) {
   if (process.env.NODE_ENV === 'production') {
     chrome.tabs.executeScript(tabId, { file: `/js/${name}.bundle.js`, runAt: 'document_end' }, cb);
   } else {
-    console.log('here!!');
-
     // dev: async fetch bundle
     fetch(`http://localhost:3000/js/${name}.bundle.js`)
     .then(res => res.text())
@@ -42,8 +40,8 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
   loadScript('inject', tabId, () => {
     console.log('load inject bundle success!');
-    // chromeAPI.getState().then((state) => {
-    //   chromeAPI.sendKeywords(state.keywords).then();
-    // });
+    chromeAPI.getState().then((state) => {
+      chromeAPI.sendInitState(state).then();
+    });
   });
 });

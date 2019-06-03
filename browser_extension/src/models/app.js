@@ -14,11 +14,11 @@ export default {
   },
   subscriptions: {
     setupHistory({ dispatch, history }) {
+      console.log('setup!!');
+
       chromeAPI.getState().then((state) => {
         dispatch({ type: 'updateState', payload: state });
-        if (state.keywords) {
-          dispatch({ type: 'updateKeywords', payload: { keywords: state.keywords } });
-        }
+        dispatch({ type: 'sendInitState', payload: { state } });
       });
       chrome.runtime.onMessage.addListener(
         (request, sender, sendResponse) => {
@@ -32,11 +32,10 @@ export default {
     },
   },
   effects: {
-    * updateKeywords({ payload }, { put, call }) {
-      const keywords = payload.keywords;
+    * sendInitState({ payload }, { put, call }) {
+      const state = payload.state;
 
-      yield put({ type: 'updateState', payload: { keywords } });
-      const res = yield call(chromeAPI.sendKeywords, keywords);
+      const res = yield call(chromeAPI.sendInitState, state);
       if (res && res.hideCount) {
         yield put({ type: 'updateState', payload: { hideCount: res.hideCount } });
       }
