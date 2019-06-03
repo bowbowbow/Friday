@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request, Response, g
+from flask import request
 import json
 
 from language_parser import get_api_daemon_object, api_call_main

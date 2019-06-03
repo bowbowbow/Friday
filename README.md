@@ -68,14 +68,13 @@ Friday/
 
 ## Run detail
 
-- Run language2Selenium. If use StanfordcoreNLP instead of NLTK, please install stanfordcorenlp and download the model and set --use_corenlp as True. If you want to run selenium code, set --run_selenium as True. By default, both --run_selenium and --use_corenlp is False.
+- Run language2Selenium. If use StanfordcoreNLP instead of NLTK, please install stanfordcorenlp and download the model and set --use_corenlp. If you want to run selenium code, set --run_selenium.
 
   ```bash
-  python language_parser.py [--run_selenium={True,False}] \
-                            [--use_corenlp={True,False}]
+  python language_parser.py --run_selenium --use_corenlp
                             
-  # Example
-  python language_parser.py --use_corenlp            
+  # If you do not set parameters, both --run_selenium and --use_corenlp are False.
+  python language_parser.py  
   ```
 
 ### Examples
