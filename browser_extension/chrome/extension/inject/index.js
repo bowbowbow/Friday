@@ -1,13 +1,22 @@
 import { init, toggle } from './app';
 
 !(() => {
-  const global = window.__gs = window.__gs || {};
+  const global = window.__fd = window.__fd || {};
+  console.log('[GetSelector]: Injected');
 
-  if (global.isInit) {
-    toggle(global);
-  } else {
-    console.log('[GetSelector]: Injected');
-    init(global);
-    toggle(global);
-  }
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log('runtime onMessage :', message);
+    const action = message.action;
+    const data = message.data;
+
+    if (action === 'init_state') {
+      if (data.state.power) {
+        init(global, data.state);
+        toggle(global, true);
+      } else {
+        toggle(global, false);
+      }
+    }
+    sendResponse();
+  });
 })();
