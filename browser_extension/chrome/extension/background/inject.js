@@ -3,8 +3,8 @@ import { init, toggle } from '../inject/app';
 
 function isInjected(tabId) {
   return chrome.tabs.executeScriptAsync(tabId, {
-    code: `var injected = window.reactExampleInjected;
-      window.reactExampleInjected = true;
+    code: `var injected = window.reactInjected;
+      window.reactInjected = true;
       injected;`,
     runAt: 'document_start',
   });
@@ -37,14 +37,21 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (changeInfo.status !== 'loading') return;
 
   const result = await isInjected(tabId);
-  if (chrome.runtime.lastError || result[0]) return;
+  if (chrome.runtime.lastError) return;
 
-  loadScript('inject', tabId, () => {
-    console.log('load inject bundle success!');
+  if (!result[0]) {
+    loadScript('inject', tabId, () => {
+      console.log('load inject bundle success!');
+      chromeAPI.getState().then((state) => {
+        chromeAPI.sendInitState(state).then();
+      });
+    });
+  } else {
+    // for SPA web such as reactjs
     chromeAPI.getState().then((state) => {
       chromeAPI.sendInitState(state).then();
     });
-  });
+  }
 });
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
