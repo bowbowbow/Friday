@@ -1,6 +1,6 @@
 # Friday
 
-<img src="https://github.com/bowbowbow/Friday/blob/master/browser_extension/chrome/assets/img/icon-128.png" width="128">
+<img src="https://github.com/bowbowbow/Friday/blob/master/chrome_extension/chrome/assets/img/icon-128.png" width="128">
 
 Friday is a Chrome extension that automatically transforms test scenarios written in natural language into selenium code.
 
