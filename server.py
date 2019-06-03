@@ -13,8 +13,6 @@ def text2selenium():
     text = data['text']
     selectors = data['selectors']
 
-    run_selenium, use_corenlp, pathsaver, nlp, allennlp = get_api_daemon_object()
-
     sample = {
         'text': text,
         'selectors': selectors,
@@ -26,4 +24,5 @@ def text2selenium():
 
 
 if __name__ == '__main__':
+    run_selenium, use_corenlp, pathsaver, nlp, allennlp = get_api_daemon_object()
     app.run(host='0.0.0.0', debug=False, port=8081)
