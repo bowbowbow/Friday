@@ -1,7 +1,7 @@
 {
   "name": "Friday",
   "version": "0.1.0",
-  "description": "Friday",
+  "description": "Chrome extension for automatically transforming test scenarios written in natural language into selenium code.",
   "scripts": {
     "dev": "node scripts/dev",
     "build": "node scripts/build",
