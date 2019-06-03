@@ -1,6 +1,7 @@
 # Friday
 
 This is the project implementation of team 5 for KAIST, CS453 Automated Software Testing, Spring 2019.
+
 Friday is a Chrome extension that automatically turns test scenarios written in natural language into selenium code.
 
 ## Installation
@@ -13,7 +14,7 @@ This project is being developed in Python 3.6.
    pip install numpy torch allennlp nltk stanfordcorenlp stanfordcorenlp
    ```
    
-2. Download glove
+2. Download glove.
 
    ```bash
    mkdir dat
