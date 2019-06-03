@@ -34,11 +34,7 @@ export default {
   effects: {
     * sendInitState({ payload }, { put, call }) {
       const state = payload.state;
-
       const res = yield call(chromeAPI.sendInitState, state);
-      if (res && res.hideCount) {
-        yield put({ type: 'updateState', payload: { hideCount: res.hideCount } });
-      }
     },
   },
   reducers: {

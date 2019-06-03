@@ -46,7 +46,7 @@ const showSelected = (selector) => {
   });
 };
 
-export const init = (global) => {
+export const init = (global, state) => {
   global.isInit = true;
   global.selectedEl = null;
 
@@ -54,6 +54,14 @@ export const init = (global) => {
     () => clearEl(global.selectedEl) && hideMessage(global),
     200,
   );
+
+  const selectors = state.selectors;
+  const location = window.location.pathname;
+  for (let i = 0; i < selectors.length; i++) {
+    if (location === selectors[i].location) {
+      showSelected(selectors[i].path);
+    }
+  }
 
   global.selectElement = debounce(e => {
     if (global.selectedEl !== e.target) {
@@ -84,6 +92,12 @@ export const init = (global) => {
     }
     clearEl(selectedEl);
     const selector = finder(selectedEl);
+
+    chrome.runtime.sendMessage({
+      action: 'updateState',
+      state: state,
+    });
+
     showSelected(selector);
   };
 
