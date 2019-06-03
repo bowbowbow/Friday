@@ -69,10 +69,10 @@ def check_user_generated_keyword(tok):
 def make_basic_code(raw_input, driver_path):
     code = ''
     code += 'from selenium import webdriver\n\n'
-    while '\n' in raw_input: raw_input = raw_input.replace('\n', ' and ')
+    raw_input = raw_input.replace('\n', ' ')
     code += "Input = '{}'\n\n".format(raw_input)
     code += 'driver_path = "'"{}"'"\n'.format(driver_path)
     code += 'driver = webdriver.Chrome(driver_path)\n'
-    code += 'driver.implicitly_wait(3)\n'
+    code += 'driver.implicitly_wait(1)\n'
     # code += "driver.get('https://google.com')\n"
     return code

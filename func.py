@@ -146,16 +146,16 @@ class Func:
 
         self.code_string += '\n# {}\n'.format(self.raw_clause)
         if self.func_name == 'click':
-            if self.run_selenium: func = driver.find_element_by_name(element_id).click
-            self.code_string += 'driver.find_element_by_name("{}").click()'.format(element_id)
+            if self.run_selenium: func = driver.find_element_by_css_selector(element_id).click
+            self.code_string += 'driver.find_element_by_css_selector("{}").click()'.format(element_id)
         elif self.func_name == 'wait':
             if self.run_selenium: func = time.sleep
             args = argument
             self.code_string += 'import time\ntime.sleep({})'.format(args)
         elif self.func_name == 'write':
-            if self.run_selenium: func = driver.find_element_by_name(element_id).send_keys
+            if self.run_selenium: func = driver.find_element_by_css_selector(element_id).send_keys
             args = argument
-            self.code_string += "driver.find_element_by_name('{}').send_keys('{}')".format(element_id, args)
+            self.code_string += "driver.find_element_by_css_selector('{}').send_keys('{}')".format(element_id, args)
         elif self.func_name == 'contain_value':
             if self.run_selenium: func = argument in driver.page_source
             arg = argument
