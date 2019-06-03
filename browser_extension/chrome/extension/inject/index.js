@@ -1,7 +1,7 @@
 import { init, toggle } from './app';
 
 !(() => {
-  const global = window.__gs = window.__gs || {};
+  const global = window.__fd = window.__fd || {};
 
   if (global.isInit) {
     toggle(global);
