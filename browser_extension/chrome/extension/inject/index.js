@@ -12,9 +12,9 @@ import { init, toggle } from './app';
     if (action === 'init_state') {
       if (data.state.power) {
         init(global, data.state);
-        toggle(global);
+        toggle(global, true);
       } else {
-        toggle(global);
+        toggle(global, false);
       }
     }
     sendResponse();
