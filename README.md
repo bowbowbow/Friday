@@ -73,7 +73,7 @@ Friday/
   ```bash
   python language_parser.py --run_selenium --use_corenlp
                             
-  # If you do not set parameters, both --run_selenium and --use_corenlp are False.
+  # If you do not set parameters, both run_selenium and use_corenlp are False.
   python language_parser.py  
   ```
 
