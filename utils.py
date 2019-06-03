@@ -1,5 +1,4 @@
 import os
-from stanfordcorenlp import StanfordCoreNLP as nlp
 from allennlp.predictors.predictor import Predictor
 from selenium import webdriver
 
@@ -13,6 +12,7 @@ class PathSaver:
 
 
 def get_stanford_parser(parser_path):
+    from stanfordcorenlp import StanfordCoreNLP as nlp
     """ Return the StanfordCoreNLP parser object """
     assert os.path.exists(parser_path)
     parser = nlp(parser_path)
