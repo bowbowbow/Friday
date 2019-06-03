@@ -14,7 +14,8 @@
   },
   "web_accessible_resources": [
     "inject.html",
-    "img/*.png"
+    "img/*.png",
+    "img/*.jpg"
   ],
   "background": {
     "page": "background.html"

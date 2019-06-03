@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import finder from '@medv/finder';
 import debounce from 'lodash/debounce';
 import { addStyle } from './addStyle';
@@ -35,6 +36,8 @@ export const init = global => {
     }
     global.selectedEl = e.target;
     const selectedEl = global.selectedEl;
+
+    if (selectedEl.classList.value.indexOf('Friday') >= 0) return;
     selectedEl.classList.add('gs_hover');
 
     const name = selectedEl.nodeName.toLowerCase();
@@ -49,14 +52,33 @@ export const init = global => {
     showMessage(global, message);
   }, 200);
 
+  let insertIndex = 0;
+
   global.addSelector = () => {
     const { selectedEl } = global;
     if (!selectedEl) {
       return;
     }
     clearEl(selectedEl);
+
+    const selectedEl$ = $(selectedEl);
+    insertIndex += 1;
+
+    const position = selectedEl$.offset();
+    $('body').append(`
+<div class="Friday" style="position: absolute; left: ${position.left}px; top: ${position.top - 20}px; z-index: 2100000000;">
+  <div class="Friday" style="position:relative;">
+    <div class="Friday" style="position: relative; background-color: black; color: white; padding: 3px 5px; border-radius: 4px; font-size: 12px; font-weight: 400;">FRIDAY#${insertIndex}</div>
+    <img class="Friday" src="${chrome.extension.getURL('img/cancel.png')}" style="width: 19px; height: 19px; object-fit: cover; position: absolute; right: -22px; top: 0; cursor: pointer;"/>
+  </div>
+</div>`);
+
     global.copiedEl = selectedEl;
     global.copiedEl.classList.add('gs_copied');
+  };
+
+  global.removeSelector = () => {
+
   };
 
   global.copyToClipboard = () => {
