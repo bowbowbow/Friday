@@ -2,7 +2,7 @@ const CONTEXT_MENU_ID = 'FRIDAY';
 
 const addSelector = tabId =>
   chrome.tabs.executeScript(tabId, {
-    code: 'window.__gs && window.__gs.addSelector()',
+    code: 'window.__fd && window.__fd.addSelector()',
   });
 
 chrome.contextMenus.create({
