@@ -20,14 +20,14 @@ function loadScript(name, tabId, cb) {
     .then((fetchRes) => {
       // Load redux-devtools-extension inject bundle,
       // because inject script and page is in a different context
-      const request = new XMLHttpRequest();
-      request.open('GET', 'chrome-extension://einpenlebdkihfkcinalemmfijdcmabp/js/redux-devtools-extension.js');  // sync
-      request.send();
-      request.onload = () => {
-        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-          chrome.tabs.executeScript(tabId, { code: request.responseText, runAt: 'document_start' });
-        }
-      };
+      // const request = new XMLHttpRequest();
+      // request.open('GET', 'chrome-extension://einpenlebdkihfkcinalemmfijdcmabp/js/redux-devtools-extension.js');  // sync
+      // request.send();
+      // request.onload = () => {
+      //   if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+      //     chrome.tabs.executeScript(tabId, { code: request.responseText, runAt: 'document_start' });
+      //   }
+      // };
       chrome.tabs.executeScript(tabId, { code: fetchRes, runAt: 'document_end' }, cb);
     });
   }

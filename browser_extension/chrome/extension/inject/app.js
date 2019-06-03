@@ -19,7 +19,7 @@ export const toggle = (global, power) => {
     global.copiedEl && global.copiedEl.classList.remove('gs_copied');
     hideMessage(global);
     $('.Friday').remove();
-    $('.gs_copied').removeClass('.gs_copied');
+    $('.gs_copied').removeClass('gs_copied');
   }
 };
 
