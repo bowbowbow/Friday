@@ -33,11 +33,11 @@ function loadScript(name, tabId, cb) {
   }
 }
 
-const updateIcon = (isActive) => {
-  chrome.browserAction.setIcon({
-    path: isActive ? chrome.extension.getURL('img/icon-red-128.png') : chrome.extension.getURL('img/icon-128.png'),
-  });
-};
+// const updateIcon = (isActive) => {
+//   chrome.browserAction.setIcon({
+//     path: isActive ? chrome.extension.getURL('img/icon-128.png') : chrome.extension.getURL('img/icon-128.png'),
+//   });
+// };
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (changeInfo.status !== 'loading') return;
@@ -49,14 +49,14 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     loadScript('inject', tabId, () => {
       console.log('load inject bundle success!');
       chromeAPI.getState().then((state) => {
-        updateIcon(state.power);
+        // updateIcon(state.power);
         chromeAPI.sendInitState(state).then();
       });
     });
   } else {
     // for SPA web such as reactjs
     chromeAPI.getState().then((state) => {
-      updateIcon(state.power);
+      // updateIcon(state.power);
       chromeAPI.sendInitState(state).then();
     });
   }
