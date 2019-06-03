@@ -8,17 +8,13 @@ export default {
   namespace: 'app',
   state: {
     power: false,
-    keywords: [],
+    selectors: [],
     warning: '',
-    hideCount: {},
   },
   subscriptions: {
     setupHistory({ dispatch, history }) {
-      console.log('setup!!');
-
       chromeAPI.getState().then((state) => {
         dispatch({ type: 'updateState', payload: state });
-        dispatch({ type: 'sendInitState', payload: { state } });
       });
       chrome.runtime.onMessage.addListener(
         (request, sender, sendResponse) => {
@@ -32,9 +28,14 @@ export default {
     },
   },
   effects: {
-    * sendInitState({ payload }, { put, call }) {
-      const state = payload.state;
-      const res = yield call(chromeAPI.sendInitState, state);
+    * sendInitState({ payload }, { put, call, select }) {
+      const app = yield select(state => state.app);
+      const nextState = {
+        power: app.power,
+        selectors: app.selectors,
+        ...payload,
+      };
+      yield call(chromeAPI.sendInitState, nextState);
     },
   },
   reducers: {

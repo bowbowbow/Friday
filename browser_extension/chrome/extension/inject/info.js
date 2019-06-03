@@ -18,12 +18,12 @@ const STYLES = `
 `;
 
 export const showMessage = (global, html) => {
-  global.message.innerHTML = `<b>${html}</b> Click [Right Mouse Button] to open context menu and add this element`;
+  global.message.innerHTML = `<b>${html}</b> Right click to add this element`;
   global.message.classList.toggle("gs_show", true);
 };
 
 export const hideMessage = global => {
-  global.message.classList.toggle("gs_show", false);
+  if (global.message) global.message.classList.toggle("gs_show", false);
 };
 
 export const initMessage = global => {

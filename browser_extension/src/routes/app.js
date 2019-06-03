@@ -8,15 +8,11 @@ import styles from './app.less';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      inputVisible: false,
-      inputValue: '',
-    };
+    this.state = {};
   }
 
   render() {
     const { app, dispatch } = this.props;
-    const { inputVisible, inputValue } = this.state;
     return (
       <div className={styles.app}>
         {app.warning ? <Alert message={app.warning} type="warning" banner closable afterClose={() => {
@@ -28,6 +24,7 @@ class App extends React.Component {
             checked={app.power}
             onClick={(checked) => {
               dispatch({ type: 'app/updateState', payload: { power: checked } });
+              dispatch({ type: 'app/sendInitState', payload: { power: checked } });
             }}/>
         </div>
         <div className={styles.description}>

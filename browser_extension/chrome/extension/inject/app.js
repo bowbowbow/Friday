@@ -7,17 +7,19 @@ import { copyToClipboard } from './clipboard';
 
 const clearEl = el => el && el.classList.remove('gs_hover');
 
-export const toggle = (global) => {
+export const toggle = (global, power) => {
   const state = !global.state;
   global.state = state;
-  const action = state ? 'addEventListener' : 'removeEventListener';
+  const action = power ? 'addEventListener' : 'removeEventListener';
   document[action]('mouseover', global.selectElement);
   document[action]('mouseout', global.clearElDebounce);
 
-  if (!state) {
+  if (!power) {
     clearEl(global.selectedEl);
     global.copiedEl && global.copiedEl.classList.remove('gs_copied');
     hideMessage(global);
+    $('.Friday').remove();
+    $('.gs_copied').removeClass('.gs_copied');
   }
 };
 
@@ -66,7 +68,6 @@ export const init = (global, state) => {
       });
     });
   };
-
 
   let insertIndex = 0;
   $('.Friday').remove();
