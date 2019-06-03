@@ -3,25 +3,40 @@
 This is the project implementation of team 5 for KAIST, CS453 Automated Software Testing, Spring 2019.
 
 
+## Installation
 
-## Prerequisites
+This project is being developed in Python 3.6.
 
-- python3.6
-- numpy
-- torch
-- allennlp
-- nltk
-- (Optional: stanfordcorenlp)
+1. Install the required dependencies.
 
+   ```
+   pip install numpy torch allennlpnltk stanfordcorenlp stanfordcorenlp
+   ```
+   
+2. Download glove
 
+   ```bash
+   mkdir dat
+   cd dat
+   wget http://nlp.stanford.edu/data/glove.6B.zip
+   unzip glove.6B.zip
+   ```
+   
+3. [Download chromedriver](http://chromedriver.chromium.org/downloads) with your Chrome version and locate into `/dat` directory. 
+    
+4. (Optional) Download stanfordcorenlp model.
 
-- Download `glove.6B.200d.txt` from [here](http://nlp.stanford.edu/data/glove.6B.zip) and locate it into `/dat` directory.
+    ```bash
+    cd dat
+    wget http://nlp.stanford.edu/software/stanford-corenlp-full-2018-10-05.zip
+    unzip stanford-corenlp-full-2018-10-05.zip
+    ```
 
-- Download appropriate version of  `chromedriver.exe` with your Chrome version and locate into `/dat` directory.
+## Getting Started
 
-- (Optional: Download stanfordcorenlp model from [here](http://nlp.stanford.edu/software/stanford-corenlp-full-2018-10-05.zip) and locate in project directory. If use NLTK, don't need to download this.)
-
-  
+```bash
+python language_parser.py
+```
 
 ## Package Structure
 
@@ -48,8 +63,6 @@ Friday/
 ├── .gitignore
 ```
 
-
-
 ## Build
 
 - Run language2Selenium. If use StanfordcoreNLP instead of NLTK, please install stanfordcorenlp and download the model and set --use_corenlp as True. If you want to run selenium code, set --run_selenium as True. By default, both --run_selenium and --use_corenlp is False.
@@ -63,8 +76,6 @@ Friday/
   ```
 
 ## Examples
-
-
 
 - Transform the language into Selenium code procedure
 
