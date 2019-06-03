@@ -8,17 +8,13 @@ export default {
   namespace: 'app',
   state: {
     power: false,
-    keywords: [],
+    selectors: [],
     warning: '',
-    hideCount: {},
   },
   subscriptions: {
     setupHistory({ dispatch, history }) {
       chromeAPI.getState().then((state) => {
         dispatch({ type: 'updateState', payload: state });
-        if (state.keywords) {
-          dispatch({ type: 'updateKeywords', payload: { keywords: state.keywords } });
-        }
       });
       chrome.runtime.onMessage.addListener(
         (request, sender, sendResponse) => {
@@ -32,14 +28,14 @@ export default {
     },
   },
   effects: {
-    * updateKeywords({ payload }, { put, call }) {
-      const keywords = payload.keywords;
-
-      yield put({ type: 'updateState', payload: { keywords } });
-      const res = yield call(chromeAPI.sendKeywords, keywords);
-      if (res && res.hideCount) {
-        yield put({ type: 'updateState', payload: { hideCount: res.hideCount } });
-      }
+    * sendInitState({ payload }, { put, call, select }) {
+      const app = yield select(state => state.app);
+      const nextState = {
+        power: app.power,
+        selectors: app.selectors,
+        ...payload,
+      };
+      yield call(chromeAPI.sendInitState, nextState);
     },
   },
   reducers: {
