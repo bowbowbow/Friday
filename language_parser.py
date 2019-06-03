@@ -181,7 +181,6 @@ def api_call_main(sample, pathsaver, run_selenium, nlp, allennlp):
 def get_api_daemon_object():
     run_selenium = args.run_selenium
     use_stanford_corenlp = args.use_corenlp
-    print('use_stanford_corenlp :', use_stanford_corenlp)
     pathsaver = PathSaver()
     if not use_stanford_corenlp:
         nlp = nltk
