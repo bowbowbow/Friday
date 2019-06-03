@@ -184,7 +184,7 @@ def get_api_daemon_object():
 
 
 def api_main():
-    # TODO: Replace this to get Chrome extension output.
+    # TODO: Replace the below samples to to get Chrome extension output.
     samples = [{
       "selectors": [
         {
