@@ -22,7 +22,7 @@ def text2selenium():
     code = api_call_main(sample, pathsaver, run_selenium, nlp, allennlp)
     print(code)
 
-    return json.dumps({'code': codd})
+    return json.dumps({'code': code})
 
 
 if __name__ == '__main__':
