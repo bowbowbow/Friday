@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import finder from '@medv/finder';
-import debounce from 'lodash/debounce';
+import _ from 'lodash';
 import { addStyle } from './addStyle';
 import { initMessage, showMessage, hideMessage } from './info';
 import { copyToClipboard } from './clipboard';
@@ -21,38 +21,55 @@ export const toggle = (global) => {
   }
 };
 
-const showSelected = (selector, tagId) => {
-  const selectedEl$ = $(selector);
-  const position = selectedEl$.offset();
-
-  $('body').append(`
-<div class="Friday Friday-tooltip-${tagId}" style="position: absolute; left: ${position.left}px; top: ${position.top - 24}px; z-index: 2100000000;">
-  <div class="Friday" style="position:relative;">
-    <div class="Friday" style="position: relative; background-color: black; color: white; padding: 1px 5px; border-radius: 4px; font-size: 12px; font-weight: 400;">${tagId}</div>
-    <img class="Friday Friday-cancel-${tagId}" data-selector="${selector}" data-index="${tagId}" src="${chrome.extension.getURL('img/cancel.png')}" style="width: 19px; height: 19px; object-fit: cover; position: absolute; right: -22px; top: 1px; cursor: pointer;"/>
-  </div>
-</div>`);
-
-  selectedEl$.addClass('gs_copied');
-
-  $(`.Friday-cancel-${tagId}`).click(function() {
-    const index = $(this).attr('data-index');
-    const selector = $(this).attr('data-selector');
-
-    $(selector).removeClass('gs_copied');
-    $(`.Friday-tooltip-${index}`).remove();
-  });
-};
-
 export const init = (global, state) => {
   global.isInit = true;
   global.selectedEl = null;
 
-  global.clearElDebounce = debounce(
+  global.clearElDebounce = _.debounce(
     () => clearEl(global.selectedEl) && hideMessage(global),
     200,
   );
 
+  const showSelected = (selector, tagId) => {
+    const selectedEl$ = $(selector);
+    const position = selectedEl$.offset();
+
+    $('body').append(`
+<div class="Friday Friday-tooltip-${tagId}" style="position: absolute; left: ${position.left}px; top: ${position.top - 24}px; z-index: 2100000000;">
+  <div class="Friday" style="position:relative;">
+    <div class="Friday" style="position: relative; background-color: black; color: white; padding: 1px 5px; border-radius: 4px; font-size: 12px; font-weight: 400;">#${tagId}</div>
+    <img class="Friday Friday-cancel-${tagId}" data-selector="${selector}" data-index="${tagId}" src="${chrome.extension.getURL('img/cancel.png')}" style="width: 19px; height: 19px; object-fit: cover; position: absolute; right: -22px; top: 1px; cursor: pointer;"/>
+  </div>
+</div>`);
+
+    selectedEl$.addClass('gs_copied');
+
+    $(`.Friday-cancel-${tagId}`).click(function() {
+      console.log('clicked!');
+      const index = $(this).attr('data-index');
+      const selector = $(this).attr('data-selector');
+
+      $(selector).removeClass('gs_copied');
+      $(`.Friday-tooltip-${index}`).remove();
+
+      let selectors = state.selectors;
+
+      const targetIndex = _.findIndex(selectors, { location: window.location.href, tagId });
+      if (targetIndex >= 0) selectors = selectors.splice(targetIndex, 0);
+      chrome.runtime.sendMessage({
+        action: 'update_state',
+        data: {
+          state: {
+            ...state,
+            selectors,
+          },
+        },
+      });
+    });
+  };
+
+  $('.Friday').remove();
+  $('.gs_copied').removeClass('.gs_copied');
   const selectors = state.selectors;
   const location = window.location.href;
   for (let i = 0; i < selectors.length; i++) {
@@ -61,7 +78,7 @@ export const init = (global, state) => {
     }
   }
 
-  global.selectElement = debounce(e => {
+  global.selectElement = _.debounce(e => {
     if (global.selectedEl !== e.target) {
       clearEl(global.selectedEl);
     }
@@ -93,14 +110,13 @@ export const init = (global, state) => {
     const selector = finder(selectedEl);
 
     insertIndex += 1;
-    const tagId = '#' + insertIndex;
+    const tagId = insertIndex;
     const selectors = state.selectors;
     selectors.push({
       path: selector,
       location: window.location.href,
       tagId,
     });
-    console.log('send Message!');
     chrome.runtime.sendMessage({
       action: 'update_state',
       data: {
@@ -110,7 +126,6 @@ export const init = (global, state) => {
         },
       },
     });
-
     showSelected(selector, tagId);
   };
 
