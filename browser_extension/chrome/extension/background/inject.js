@@ -1,4 +1,5 @@
 import * as chromeAPI from '../../../src/utils/chromeAPI';
+import { init, toggle } from '../inject/app';
 
 function isInjected(tabId) {
   return chrome.tabs.executeScriptAsync(tabId, {
@@ -46,7 +47,13 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   });
 });
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  console.log('request :', request);
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  console.log('message :', message);
+  const action = message.action;
+  const data = message.data;
+
+  if (action === 'update_state') {
+    chromeAPI.saveState(data.state);
+  }
   sendResponse();
 });

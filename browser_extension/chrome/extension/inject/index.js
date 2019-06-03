@@ -17,5 +17,6 @@ import { init, toggle } from './app';
         toggle(global);
       }
     }
+    sendResponse();
   });
 })();
