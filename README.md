@@ -1,7 +1,7 @@
 # Friday
 
 This is the project implementation of team 5 for KAIST, CS453 Automated Software Testing, Spring 2019.
-
+Friday is a Chrome extension that automatically turns test scenarios written in natural language into selenium code.
 
 ## Installation
 
@@ -10,7 +10,7 @@ This project is being developed in Python 3.6.
 1. Install the required dependencies.
 
    ```
-   pip install numpy torch allennlpnltk stanfordcorenlp stanfordcorenlp
+   pip install numpy torch allennlp nltk stanfordcorenlp stanfordcorenlp
    ```
    
 2. Download glove
@@ -63,7 +63,7 @@ Friday/
 ├── .gitignore
 ```
 
-## Build
+## Run detail
 
 - Run language2Selenium. If use StanfordcoreNLP instead of NLTK, please install stanfordcorenlp and download the model and set --use_corenlp as True. If you want to run selenium code, set --run_selenium as True. By default, both --run_selenium and --use_corenlp is False.
 
@@ -75,7 +75,7 @@ Friday/
   python language_parser.py --use_corenlp            
   ```
 
-## Examples
+### Examples
 
 - Transform the language into Selenium code procedure
 
