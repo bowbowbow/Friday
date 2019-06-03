@@ -27,6 +27,7 @@ def sent2clauses(sent, parser):
     # res = nltk.Tree.fromstring(tree)
 
     # TODO: Find better ways to split the sentence into clauses, like parsing.
+    while '\n' in sent: sent = sent.replace('\n', ' and ')
     clauses = [clause.strip() for clause in sent.split('and')]
     new_clauses = []
     for clause in clauses:
@@ -64,7 +65,7 @@ def get_function_class(clause, nlp, run_selenium):
 
 def find_function_argument(func, allennlp):
     """
-    Find argument of function call
+    Find argument of function call (e.g. seconds for wait function)
     Input:
         func("Func" class): custom-class with assigned function type
     Output:
@@ -72,7 +73,13 @@ def find_function_argument(func, allennlp):
     res = allennlp.predict(func.raw_clause)
     # TODO: Think about the issue that one verb per one clause is okay or not?
     # Has one verb and it should be same with prevous verb
-    assert len(res['verbs']) == 1 and res['verbs'][0]['verb'] == func.func_word
+    try:
+        assert len(res['verbs']) == 1
+    except:
+        assert func.func_name == 'contain_value'
+        res['verbs'] = [res['verbs'][0]]
+
+    assert res['verbs'][0]['verb'] == func.func_word
     words, tags = res['words'], res['verbs'][0]['tags']
     assert len(words) == len(tags)
     parsed = parse_allen_tag(words, tags)
@@ -83,11 +90,11 @@ def find_function_argument(func, allennlp):
     return func
 
 
-def main_helper(element_tuple, language, nlp, allennlp, driver, driver_path, run_selenium):
+def main_helper(selector_list, language, nlp, allennlp, driver, driver_path, run_selenium):
     """
     Main function of language part.
     Input:
-        element_tuple(tuple): List of ('user-assign element name', 'element id for selector')
+        selector_list(list): list of dict(path, location, tagID)
         language(str): user-generated natural language for test code
         driver: Selenium driver
     Output:
@@ -96,50 +103,38 @@ def main_helper(element_tuple, language, nlp, allennlp, driver, driver_path, run
     codes = make_basic_code(language, './.' + driver_path)
     print("\n\n\nSTEP0: Raw input\n{}\n".format(language))
     clauses = sent2clauses(language, nlp)
+
     print('STEP1: split language into clauses.\n{}\n'.format(clauses))
     funcs = [get_function_class(clause, nlp, run_selenium) for clause in clauses]
+
     print("STEP2: Assign the selenium function type for each of clauses.")
     for idx, f in enumerate(funcs): print("{}:{} => {}".format(idx, f.raw_clause, f.func_name))
+
     print("\nSTEP3: Find argument for each function.")
     funcs = [find_function_argument(func, allennlp) for func in funcs]
+
     print("\nSTEP4: Make Selenium code with name-tuple.")
-    for func in funcs: func.make_selenium_code(element_tuple, driver)
+    for func in funcs: func.make_selenium_code(selector_list, driver)
+
     print("\nSTEP5: Run code! (Optional)")
     if run_selenium:
         for func in funcs: func.run_selenium_code()
+
     print('\nSTEP6: Make python code')
     for func in funcs: codes += func.code_string + '\n'
     num = len(os.listdir('./output/'))
     fname = './output/testfile_{}.py'.format(num)
     print("output file name: {}".format(fname))
     print('\n\noutput code: \n{}'.format(codes))
+
+    # Write the generated code for debug
+    if not os.path.exists('./output'): os.mkdir('./output')
     with open(fname, 'w') as f: f.write(codes)
+
     return funcs, codes
 
 
-def read_extension_output():
-    """
-    Read json file from Chrome extension
-    Input:
-        maybe json path or not?
-    Output:
-        foo(tuple): list of selenium nickname-selector tuple
-        bar(str): raw language to use
-    """
-    selector_json_fname = 'foo.json'
-    raw_input_txt = 'bar.json'
-
-    with open(selector_json_fname, 'r') as f:
-        foo = json.load(f)
-    with open(raw_input_txt, 'r') as f:
-        bar = f.readlines()
-        assert len(bar) == 1
-        bar = bar[0].strip()
-    foo = list(foo.items())  # dict to tuple
-    return foo, bar
-
-
-def main():
+def local_main():
     """
     Main Function!
     make output file at /output/
@@ -148,7 +143,6 @@ def main():
     run_selenium = args.run_selenium
     use_stanford_corenlp = args.use_corenlp
     pathsaver = PathSaver()
-
     nlp = nltk if not use_stanford_corenlp else get_stanford_parser(pathsaver.parser_path)
     allennlp = get_allen_parser(pathsaver.allen_path)
 
@@ -163,5 +157,60 @@ def main():
         main_helper(sample_tuple, sample_sent, nlp, allennlp, driver, pathsaver.driver_path, run_selenium)
 
 
+def api_call_main(sample, pathsaver, run_selenium, nlp, allennlp):
+    """
+    API interaction main function.
+    Input
+        sample
+        pathsaver
+        run_selenium
+        nlp
+        allennlp
+    Output
+        code
+    """
+    driver = get_driver(pathsaver.driver_path) if run_selenium else None
+    _, code = main_helper(sample['selectors'], sample['text'], nlp, allennlp, driver, pathsaver.driver_path, run_selenium)
+    return code
+
+
+def get_api_daemon_object():
+    run_selenium = args.run_selenium
+    use_stanford_corenlp = args.use_corenlp
+    pathsaver = PathSaver()
+    nlp = nltk if not use_stanford_corenlp else get_stanford_parser(pathsaver.parser_path)
+    allennlp = get_allen_parser(pathsaver.allen_path)
+    return run_selenium, use_stanford_corenlp, pathsaver, nlp, allennlp
+
+
+def api_main():
+    # TODO: Replace this to get Chrome extension output.
+    samples = [{
+      "selectors": [
+        {
+          "path": ".gLFyf",
+          "location": "https://www.google.com/",
+          "tagId": 1
+        },
+        {
+          "path": "center:nth-child(1) > .gNO89b",
+          "location": "https://www.google.com/",
+          "tagId": 2
+        }
+      ],
+        "text": "Open the \"https://google.com\" and Enter the \"Iron man\" in #1 and click the #2.\nWait the \"3 seconds\" and Check if \"Robert Downey\" is on the page"}]
+
+    run_selenium, use_corenlp, pathsaver ,nlp, allennlp = get_api_daemon_object()
+
+    for sample in samples:
+        code = api_call_main(sample, pathsaver, run_selenium, nlp, allennlp)
+
+        # TODO: Replace this with post code to Chrome extension.
+        pprint(code)
+
+
 if __name__ == '__main__':
-    main()
+    api_main()
+
+
+

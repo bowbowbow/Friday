@@ -10,9 +10,9 @@ class KeywordManager:
             'click':['click', 'touch'],
             'wait':['wait', 'sleep'],
             'write':['enter', 'put', 'write'],
-            'contain_value': ['have', 'has', 'contain'],
+            'contain_value': ['have', 'has', 'contain', 'check'],
             'refresh':['refresh'],
-            'move_url': ['go', 'move']
+            'move_url': ['go', 'move', 'open']
         }
         self.keyword_list = [el for li in self.func2keyword.values() for el in li]
         assert len(self.keyword_list) == len(list(set(self.keyword_list)))
@@ -71,7 +71,7 @@ class Func:
                 self.func_name = self.keyman.keyword2func[word]
                 if self.func_name in ['write', 'wait']: self.need_arguments = True
 
-        # Exact match with keyword is failed.
+        # Exact match with keyword is failed. Use word embedding similarity for decision.
         if not find_keyword:
             print("[Warning] Use word embedding to decide the function type")
             self.embed_manager = EmbedManager()
@@ -117,30 +117,32 @@ class Func:
         elif self.func_name == 'wait':
             self.arguments_list.append(parsed['ARGM-TMP'])
         elif self.func_name == 'write':
-            self.arguments_list.append(parsed['ARG1'])
+            arg = parsed['ARG1'] if 'ARG1' in parsed else parsed['ARG0']
+            self.arguments_list.append(arg)
         elif self.func_name == 'contain_value':
-            pass
+            arg = parsed['ARG1']
+            self.arguments_list.append(arg)
         elif self.func_name == 'refresh':
             self.arguments_list.append(parsed['ARG1'])
         elif self.func_name == 'move_url':
-            self.arguments_list.append(parsed['ARG2'])
-
+            arg = parsed['ARG1'] if 'ARG1' in parsed else parsed['ARG2']
+            self.arguments_list.append(arg)
         if self.need_arguments and len(self.arguments_list) == 0:
             raise ValueError("We need argument!")
 
-    def make_selenium_code(self, name_tuple, driver):
+    def make_selenium_code(self, selector_list, driver):
         """
         Convert the function into selenium code and return
         Input:
-            name_tuple:
+            selector_list: List of dict(path, location. tagID)
         Output:
             func: seleninum function
             args: argument for 'func'
         """
         func, args = None, None
 
-        element_id = self.find_target_element_for_selenium_with_nametuple(name_tuple) if self.target_name is not None else None
-        argument = self.find_argument_for_selenium_with_nametuple(name_tuple) if len(self.arguments_list) != 0 else None
+        element_id = self.find_target_element_for_selenium_with_nametuple(selector_list) if self.target_name is not None else None
+        argument = self.find_argument_for_selenium_with_nametuple() if len(self.arguments_list) != 0 else None
 
         self.code_string += '\n# {}\n'.format(self.raw_clause)
         if self.func_name == 'click':
@@ -155,7 +157,9 @@ class Func:
             args = argument
             self.code_string += "driver.find_element_by_name('{}').send_keys('{}')".format(element_id, args)
         elif self.func_name == 'contain_value':
-            pass
+            if self.run_selenium: func = argument in driver.page_source
+            arg = argument
+            self.code_string += 'assert "{}" in driver.page_source'.format(arg)
         elif self.func_name == 'refresh':
             if self.run_selenium: func = driver.refresh
             self.code_string += 'driver.refresh()'
@@ -172,7 +176,7 @@ class Func:
         else:
             self.selenium_func()
 
-    def find_argument_for_selenium_with_nametuple(self, name_tuple):
+    def find_argument_for_selenium_with_nametuple(self):
         if self.arguments_list[0].count('"') == 1: self.arguments_list[0] += '"'
         assert self.arguments_list[0].count('"') in [0, 2]
         assert len(self.arguments_list) == 1
@@ -182,9 +186,6 @@ class Func:
             start_idx = argument.index('"') + 1
             end_idx = start_idx + argument[start_idx:].index('"')
             argument_token = argument[start_idx:end_idx].strip()
-            name_tuple = {k: v for (k, v) in name_tuple}
-            if argument_token in name_tuple:
-                argument_token = name_tuple[argument_token]
 
             if 'sec' in argument or 'second' in argument or 'min' in argument or 'minute' in argument:
                 tok = ''
@@ -199,18 +200,34 @@ class Func:
         assert self.func_name == 'refresh'
         return
 
-    def find_target_element_for_selenium_with_nametuple(self, name_tuple):
-        assert self.target_name is not None and self.target_name.count('"') == 2
+    def find_target_element_for_selenium_with_nametuple(self, selector_list):
+        assert self.target_name is not None and '#' in self.target_name
 
-        start_idx = self.target_name.index('"') + 1
-        end_idx = start_idx + self.target_name[start_idx:].index('"')
-        target_token = self.target_name[start_idx:end_idx].strip()
+        element = None
+        for idx,tok in enumerate(self.target_name.split()):
+            if tok == '#':
+                assert idx < len(self.target_name.split()) - 1
+                element = int(self.target_name.split()[idx + 1])
 
-        name_tuple = {k:v for (k,v) in name_tuple}
-        assert target_token in name_tuple
 
-        target_id = name_tuple[target_token]
-        return target_id
+        if element is None: raise ValueError
+
+        selector_path = None
+        for selector in selector_list:
+            if element == selector['tagId']:
+                selector_path = selector['path']
+
+        return selector_path
+
+        # start_idx = self.target_name.index('"') + 1
+        # end_idx = start_idx + self.target_name[start_idx:].index('"')
+        # target_token = self.target_name[start_idx:end_idx].strip()
+        #
+        # name_tuple = {k:v for (k,v) in name_tuple}
+        # assert target_token in name_tuple
+        #
+        # target_id = name_tuple[target_token]
+        # return target_id
 
 class EmbedManager:
     def __init__(self):
