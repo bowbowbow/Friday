@@ -1,10 +1,9 @@
 <img src="https://github.com/bowbowbow/Friday/blob/master/chrome_extension/chrome/assets/img/icon-128.png" width="128">
 
 # Friday
-
-<img src="https://github.com/bowbowbow/Friday/blob/master/samples/sample1/run_screenshot1.jpg" width="512">
-
 Friday is a Chrome extension that automatically transforms test scenarios written in natural language into selenium code.
+
+<img src="https://github.com/bowbowbow/Friday/blob/master/samples/sample1/run_screenshot1.jpg" width="712">
 
 This is the project implementation of team 5 for KAIST, CS453 Automated Software Testing, Spring 2019.
 
