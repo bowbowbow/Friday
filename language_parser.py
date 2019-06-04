@@ -81,6 +81,7 @@ def find_function_argument(func, allennlp):
     try:
         assert len(res['verbs']) == 1
     except:
+        # TODO: Find better ways to solve this problem. If more than one verb, which one to choose?
         assert func.func_name == 'contain_value'
         res['verbs'] = [res['verbs'][0]]
 
