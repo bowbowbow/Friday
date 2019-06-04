@@ -17,10 +17,15 @@ def text2selenium():
         'text': text,
         'selectors': selectors,
     }
-    code = api_call_main(sample, pathsaver, run_selenium, nlp, allennlp)
-    print(code)
 
-    return json.dumps({'code': code})
+    result = {'code': '', 'error': ''}
+    try:
+        code = api_call_main(sample, pathsaver, run_selenium, nlp, allennlp)
+        result['code'] = code
+    except Exception as err:
+        result['error'] = err
+
+    return json.dumps({'result': result})
 
 
 if __name__ == '__main__':
