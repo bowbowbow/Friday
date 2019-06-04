@@ -196,8 +196,11 @@ class Func:
                 if 'min' in argument or 'minute' in argument:
                     argument_token *= 60
             return argument_token
-
-        assert self.func_name == 'refresh'
+        try:
+            assert self.func_name == 'refresh'
+        except:
+            print(argument)
+            return argument
         return
 
     def find_target_element_for_selenium_with_nametuple(self, selector_list):
