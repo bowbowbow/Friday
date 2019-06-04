@@ -27,7 +27,8 @@ def sent2clauses(sent, parser):
     # res = nltk.Tree.fromstring(tree)
 
     # TODO: Find better ways to split the sentence into clauses, like parsing.
-    while '\n' in sent: sent = sent.replace('\n', ' and ')
+    while '\n' in sent: sent = sent.replace('\n', ' ')
+
     clauses = [clause.strip() for clause in sent.split('and')]
     final_clauses = []
     for clause in clauses: final_clauses += nltk.sent_tokenize(clause)
@@ -210,7 +211,7 @@ def api_main():
           "tagId": 2
         }
       ],
-        "text": "Open the \"https://google.com\". Enter the \"Iron man\" in #1 and click the #2.\nWait the \"3 seconds\" and Check if \"Robert Downey\" is on the page"}]
+        "text": "Open the \"https://google.com\". \n\n Enter the \"Iron man\" in #1 and click the #2.\nWait the \"3 seconds\" and Check if \"Robert Downey\" is on the page"}]
 
     run_selenium, use_corenlp, pathsaver ,nlp, allennlp = get_api_daemon_object()
 
