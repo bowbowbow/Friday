@@ -1,8 +1,8 @@
 from selenium import webdriver
 
-Input = 'Open the "https://google.com" and Enter the "Iron man" in #1 and click the #2. Wait the "3 seconds" and Check if "Robert Downey" is on the page'
+Input = 'Open the "https://google.com" and Enter the "Iron man" in #1 and click the #2. Wait the "3 seconds" and Check if "Robert Downey" is on the page.'
 
-driver_path = "./../dat/chromedriver.exe"
+driver_path = "./../dat/chromedriver"
 driver = webdriver.Chrome(driver_path)
 driver.implicitly_wait(1)
 
