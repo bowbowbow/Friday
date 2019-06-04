@@ -29,6 +29,10 @@ def sent2clauses(sent, parser):
     # TODO: Find better ways to split the sentence into clauses, like parsing.
     while '\n' in sent: sent = sent.replace('\n', ' and ')
     clauses = [clause.strip() for clause in sent.split('and')]
+    final_clauses = []
+    for clause in clauses: final_clauses += nltk.sent_tokenize(clause)
+    clauses = final_clauses
+
     new_clauses = []
     for clause in clauses:
         new_clause = []
@@ -206,7 +210,7 @@ def api_main():
           "tagId": 2
         }
       ],
-        "text": "Open the \"https://google.com\" and Enter the \"Iron man\" in #1 and click the #2.\nWait the \"3 seconds\" and Check if \"Robert Downey\" is on the page"}]
+        "text": "Open the \"https://google.com\". Enter the \"Iron man\" in #1 and click the #2.\nWait the \"3 seconds\" and Check if \"Robert Downey\" is on the page"}]
 
     run_selenium, use_corenlp, pathsaver ,nlp, allennlp = get_api_daemon_object()
 
