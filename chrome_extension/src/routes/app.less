@@ -24,10 +24,10 @@
     color: @oc-gray-8;
     font-weight: 500;
     padding: 30px @margin-side 12px @margin-side;
-
     > .power {
-      margin-left: 10px;
-      margin-top: -3px;
+      position: absolute;
+      left: 105px;
+      top: 30px;
     }
   }
   > .description {
@@ -40,7 +40,7 @@
     }
   }
   > .section {
-    margin-top: 20px;
+    margin-top: 15px;
     > .header {
       padding: 0 @margin-side;
       > .title {
@@ -60,13 +60,11 @@
       }
     }
     > .body {
-      height: 134px;
-      overflow-y: scroll;
-      margin-top: 5px;
+      margin-top: 0;
       padding: 10px @margin-side 2px @margin-side;
       background-color: white;
-      > .tagInput {
-        margin-bottom: 9px;
+      > .button {
+        margin-top: 10px;
       }
     }
   }
