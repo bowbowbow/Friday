@@ -110,7 +110,8 @@ class App extends React.Component {
             <div className={styles.title}>Selenium Code {app.loading ? <Spin/> : null}</div>
           </div>
           <div className={styles.code}>
-            {app.code ? <Highlight language="python">{app.code}</Highlight> : <Empty/>}
+            {app.code ? <Highlight language="python">{app.code}</Highlight> :
+              <Empty style={{marginTop: '15px'}} image={chrome.extension.getURL('img/icon-128.png')} description="Something went wrong"/>}
           </div>
         </div>
       </div>
