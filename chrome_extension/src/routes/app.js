@@ -2,8 +2,9 @@ import React from 'react';
 import _ from 'lodash';
 import {connect} from 'dva';
 import Highlight from 'react-highlight'
-import {Alert, Tag, Input, Button, Tooltip, Icon, Switch, Badge} from 'antd';
+import {Alert, Empty, Spin, Tag, Input, Button, Tooltip, Icon, Switch, Badge} from 'antd';
 
+import '../../node_modules/highlight.js/styles/atelier-forest-light.css'
 import styles from './app.less';
 
 const {TextArea} = Input;
@@ -11,7 +12,6 @@ const {TextArea} = Input;
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
   }
 
   render() {
@@ -40,18 +40,41 @@ class App extends React.Component {
             <div className={styles.description}>Enter test scenario in text</div>
           </div>
           <div className={styles.body}>
-            <TextArea rows={5}/>
-            <Button className={styles.button} type="primary" icon="play-circle" block>Convert</Button>
+            <TextArea
+              rows={5}
+              value={app.text}
+              onChange={(e) => {
+                dispatch({
+                  type: 'app/updateState',
+                  payload: {
+                    text: e.target.value,
+                  },
+                });
+              }}
+            />
+            <Button
+              className={styles.button}
+              type="primary"
+              icon="play-circle"
+              block
+              onClick={() => {
+                if (app.loading) return;
+                dispatch({
+                  type: 'app/postText2Selenium',
+                  payload: {
+                    text: app.text,
+                    selectors: app.selectors,
+                  },
+                });
+              }}>Run</Button>
           </div>
         </div>
         <div className={styles.section}>
           <div className={styles.header}>
-            <div className={styles.title}>Selenium Code</div>
+            <div className={styles.title}>Selenium Code {app.loading ? <Spin/>: null}</div>
           </div>
-          <div className={styles.body}>
-            <Highlight language="javascript">
-              {`function foo() { return 'bar' }`}
-            </Highlight>
+          <div className={styles.code}>
+            {app.code ? <Highlight language="python">{app.code}</Highlight> : <Empty/>}
           </div>
         </div>
       </div>
