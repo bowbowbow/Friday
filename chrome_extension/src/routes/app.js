@@ -9,6 +9,12 @@ import styles from './app.less';
 
 const {TextArea} = Input;
 
+const getSimpleLocation = function (href) {
+  const l = document.createElement("a");
+  l.href = href;
+  return l.hostname.replace('www.', '') + l.pathname;
+};
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -33,6 +39,36 @@ class App extends React.Component {
         <div className={styles.description}>
           {app.power ? <span>Friday is currently working <Icon type="smile"/></span> :
             <span>Friday is currently not working <Icon type="meh"/></span>}
+        </div>
+        <div className={styles.section}>
+          <div className={styles.header}>
+            <div className={styles.title}>Added elements</div>
+          </div>
+          <div className={styles.body}>
+            {app.selectors.map((selector, index) => {
+              const tag = `#${selector.tagId}-${getSimpleLocation(selector.location)}`;
+              const isLongTag = tag.length > 12;
+              const tagText = isLongTag ? `${tag.slice(0, 12)}...` : tag;
+              const tagElem = (
+                <Tag key={index}
+                     closable
+                     afterClose={() => {
+                       // const keywords = _.cloneDeep(app.keywords);
+                       // _.pull(keywords, tag);
+                       // dispatch({
+                       //   type: 'app/updateKeywords',
+                       //   payload: {
+                       //     keywords,
+                       //   },
+                       // });
+                     }}>
+                  {tagText}
+                </Tag>
+              );
+              return isLongTag ?
+                <Tooltip title={`#${selector.tagId}-${selector.location}`} key={index}>{tagElem}</Tooltip> : tagElem;
+            })}
+          </div>
         </div>
         <div className={styles.section}>
           <div className={styles.header}>
@@ -66,12 +102,12 @@ class App extends React.Component {
                     selectors: app.selectors,
                   },
                 });
-              }}>Run</Button>
+              }}>Transform</Button>
           </div>
         </div>
         <div className={styles.section}>
           <div className={styles.header}>
-            <div className={styles.title}>Selenium Code {app.loading ? <Spin/>: null}</div>
+            <div className={styles.title}>Selenium Code {app.loading ? <Spin/> : null}</div>
           </div>
           <div className={styles.code}>
             {app.code ? <Highlight language="python">{app.code}</Highlight> : <Empty/>}
