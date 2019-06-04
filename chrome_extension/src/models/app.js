@@ -11,10 +11,14 @@ export default {
     power: false,
     selectors: [],
     warning: '',
+    text: 'open the "https://google.com" and wait the "3 seconds".',
+    code: '',
+    loading: false,
   },
   subscriptions: {
     setupHistory({dispatch, history}) {
       chromeAPI.getState().then((state) => {
+        state.loading = false;
         dispatch({type: 'updateState', payload: state});
       });
       chrome.runtime.onMessage.addListener(
@@ -39,13 +43,16 @@ export default {
       yield call(chromeAPI.sendInitState, nextState);
     },
     * postText2Selenium({payload}, {put, call}) {
+      yield put({type: 'updateState', payload: {loading: true}});
       const res = yield call(service.postText2selenium, payload);
       if (res.status === 200) {
-        const code = res.body.code;
+        const data = JSON.parse(res.text);
+        const code = data.code;
         yield put({type: 'updateState', payload: {code}});
       } else {
 
       }
+      yield put({type: 'updateState', payload: {loading: false}});
     },
   },
   reducers: {
