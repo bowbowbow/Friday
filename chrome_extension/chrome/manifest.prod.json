@@ -25,5 +25,5 @@
     "http://*/*",
     "https://*/*"
   ],
-  "content_security_policy": "default-src 'self'; script-src 'self' http://143.248.134.129:8081; style-src * 'unsafe-inline'; img-src 'self' data:;"
+  "content_security_policy": "default-src 'self'; script-src 'self' http://143.248.134.129:8081 'unsafe-eval'; connect-src http://143.248.134.129:8081; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }
