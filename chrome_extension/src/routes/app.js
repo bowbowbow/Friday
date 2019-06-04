@@ -62,7 +62,7 @@ class App extends React.Component {
                 dispatch({
                   type: 'app/postText2Selenium',
                   payload: {
-                    text: app.text,
+                    text: app.text.trim(),
                     selectors: app.selectors,
                   },
                 });
