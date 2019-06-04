@@ -1,6 +1,7 @@
 import queryString from 'query-string';
 import pathToRegexp from 'path-to-regexp';
 import {routerRedux} from 'dva/router';
+import {Modal, message} from 'antd';
 import _ from 'lodash';
 import * as chromeAPI from '../utils/chromeAPI';
 import * as service from '../services/app';
@@ -48,11 +49,23 @@ export default {
       if (res.status === 200) {
         const data = JSON.parse(res.text);
         const code = data.code;
-        yield put({type: 'updateState', payload: {code}});
+        if (data.error) {
+          Modal.error({
+            title: 'Error occurred during transforming',
+            content: data.error,
+          });
+        } else {
+          message.success('success', 2)
+        }
+        yield put({type: 'updateState', payload: {code, loading: false}});
       } else {
-
+        Modal.error({
+          title: 'Unknown error',
+          content: 'Please contact the developer (clsrn1581@gmail.com)',
+        });
+        yield put({type: 'updateState', payload: {loading: false, code: ''}});
       }
-      yield put({type: 'updateState', payload: {loading: false}});
+
     },
   },
   reducers: {
