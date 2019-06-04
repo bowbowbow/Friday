@@ -27,15 +27,32 @@ def sent2clauses(sent, parser):
     # res = nltk.Tree.fromstring(tree)
 
     # TODO: Find better ways to split the sentence into clauses, like parsing.
-    while '\n' in sent: sent = sent.replace('\n', ' ')
-    while 'And' in sent: sent = sent.replace('And', 'and')
-    clauses = [clause.strip() for clause in sent.split('and')]
-    final_clauses = []
-    for clause in clauses: final_clauses += nltk.sent_tokenize(clause)
-    clauses = final_clauses
+    #1. split by new line
+    clauses = sent.split('\n')
+    new_clauses = []
+    for clause in clauses:
+        if clause != '': new_clauses.append(clause.strip())
+    clauses = new_clauses
+    print("    Split by new line: {}".format(clauses))
+
+    #2. split by sentence tokenizer
+    new_clauses = []
+    for clause in clauses:
+        new_clauses += [tmp.strip() for tmp in nltk.sent_tokenize(clause)]
+    clauses = new_clauses
+    print("    Split by nltk sent tokenizer: {}".format(clauses))
+
+    #3. split by 'and' token
+    new_clauses = []
+    for clause in clauses:
+        while 'And' in clause: clause = clause.replace('And', 'and')
+        new_clauses += [tmp.strip() for tmp in clause.split('and')]
+    clauses = new_clauses
+    print("    Split by and token: {}".format(clauses))
 
     new_clauses = []
     for clause in clauses:
+        clause = clause.strip()
         new_clause = []
         for tok in clause.split():
             if not check_user_generated_keyword(tok):
@@ -75,7 +92,9 @@ def find_function_argument(func, allennlp):
         func("Func" class): custom-class with assigned function type
     Output:
     """
+    print(func.raw_clause)
     res = allennlp.predict(func.raw_clause)
+    print(res)
     # TODO: Think about the issue that one verb per one clause is okay or not?
     # Has one verb and it should be same with prevous verb
     try:
@@ -212,7 +231,7 @@ def api_main():
           "tagId": 2
         }
       ],
-        "text": 'open the "https://google.com" and wait the "4 seconds". And check "google" is on the page'}]
+        "text": 'Open the "https://github.com/bowbowbow/Friday" and click #1. \n click #2 and click #3.'}]
 
     run_selenium, use_corenlp, pathsaver ,nlp, allennlp = get_api_daemon_object()
 
