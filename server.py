@@ -23,6 +23,7 @@ def text2selenium():
         code = api_call_main(sample, pathsaver, run_selenium, nlp, allennlp)
         result['code'] = code
     except Exception as err:
+        print(err)
         result['error'] = str(err)
 
     return json.dumps(result)
