@@ -25,7 +25,7 @@ def text2selenium():
     except Exception as err:
         result['error'] = str(err)
 
-    return json.dumps({'result': result})
+    return json.dumps(result)
 
 
 if __name__ == '__main__':
