@@ -77,8 +77,8 @@ export const init = (global, state) => {
   for (let i = 0; i < selectors.length; i++) {
     if (location === selectors[i].location) {
       showSelected(selectors[i].path, selectors[i].tagId);
-      insertIndex = Math.max(insertIndex, selectors[i].tagId);
     }
+    insertIndex = Math.max(insertIndex, selectors[i].tagId);
   }
 
   global.selectElement = _.debounce(e => {
