@@ -231,7 +231,7 @@ def api_main():
           "tagId": 2
         }
       ],
-        "text": 'Open the "https://github.com/bowbowbow/Friday" and click #1. \n click #2 and click #3.'}]
+        "text": 'enter the "KAIST" to the #1.'}]
 
     run_selenium, use_corenlp, pathsaver ,nlp, allennlp = get_api_daemon_object()
 
