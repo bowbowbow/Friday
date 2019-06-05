@@ -27,6 +27,9 @@ def sent2clauses(sent, parser):
     # res = nltk.Tree.fromstring(tree)
 
     # TODO: Find better ways to split the sentence into clauses, like parsing.
+    #0. Replace all ' into ".
+    while "'" in sent: sent = sent.replace("'", '"')
+
     #1. split by new line
     clauses = sent.split('\n')
     new_clauses = []
