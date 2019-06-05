@@ -234,7 +234,7 @@ def api_main():
           "tagId": 2
         }
       ],
-        "text": 'enter the "KAIST" to the #1.'}]
+        "text": 'Open the \'https://google.com\' and sleep the 3 seconds.'}]
 
     run_selenium, use_corenlp, pathsaver ,nlp, allennlp = get_api_daemon_object()
 

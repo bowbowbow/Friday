@@ -115,7 +115,8 @@ class Func:
         if self.func_name == 'click':
             pass
         elif self.func_name == 'wait':
-            self.arguments_list.append(parsed['ARGM-TMP'])
+            arg = parsed['ARGM-TMP'] if 'ARGM-TMP' in parsed else parsed['ARG1']
+            self.arguments_list.append(arg)
         elif self.func_name == 'write':
             arg = parsed['ARG1'] if 'ARG1' in parsed else parsed['ARG0']
             self.arguments_list.append(arg)
