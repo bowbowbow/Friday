@@ -147,7 +147,8 @@ class Func:
         self.code_string += '\n# {}\n'.format(self.raw_clause)
         if self.func_name == 'click':
             if self.run_selenium: func = driver.find_element_by_css_selector(element_id).click
-            self.code_string += 'try:\n    driver.find_element_by_css_selector("{}").click()\nexcept:\n    driver.execute_script(arguments[0].click();", driver.find_element_by_css_selector("{}"))'.format(element_id, element_id)
+            self.code_string += 'try:\n    driver.find_element_by_css_selector("{}").click()\nexcept:\n    driver.execute_script("arguments[0].click();", driver.find_element_by_css_selector("{}"))'.format(element_id, element_id)
+
         elif self.func_name == 'wait':
             if self.run_selenium: func = time.sleep
             args = argument

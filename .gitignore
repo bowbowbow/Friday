@@ -4,6 +4,7 @@ __pycache__/
 venv/
 dat/
 chromedriver.exe
+.DS_Store
 
 browser_extension/build/
 browser_extension/dev/
