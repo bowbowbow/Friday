@@ -37,8 +37,8 @@ class App extends React.Component {
             }}/>
         </div>
         <div className={styles.description}>
-          {app.power ? <span>Finding selector mode is activated. <Icon type="smile"/></span> :
-            <span>Finding selector mode is disabled. <Icon type="meh"/></span>}
+          {app.power ? <span>The selector searching mode has been activated. <Icon type="smile"/></span> :
+            <span>The selector searching mode is disabled. <Icon type="meh"/></span>}
         </div>
         <div className={styles.section}>
           <div className={styles.header}>
@@ -51,7 +51,7 @@ class App extends React.Component {
               const tagText = isLongTag ? `${tag.slice(0, 12)}...` : tag;
               const tagElem = (
                 <Tag key={index}
-                     onClick={ () => window.open(selector.location)}
+                     // onClick={ () => window.open(selector.location)}
                      closable
                      afterClose={() => {
                        const selectors = _.cloneDeep(app.selectors);
