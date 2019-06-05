@@ -14,7 +14,7 @@ This project is being developed in Python 3.6.
 1. Install the required dependencies.
 
    ```
-   pip install numpy torch allennlp nltk stanfordcorenlp stanfordcorenlp
+   pip install numpy torch allennlp nltk stanfordcorenlp
    ```
    
 2. Download [glove](https://nlp.stanford.edu/projects/glove/).
