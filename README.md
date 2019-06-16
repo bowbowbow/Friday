@@ -1,5 +1,3 @@
-<img src="https://github.com/bowbowbow/Friday/blob/master/chrome_extension/chrome/assets/img/icon-128.png" width="128">
-
 # Friday
 Friday is a Chrome extension that automatically transforms test scenarios written in natural language into selenium code.
 
@@ -48,7 +46,7 @@ Below is the overview of directory structure.
 
 ```text
 Friday/
-├── browser_extension
+├── chrome_extension
 │     └── TBD...
 │     └── TBD...
 │          └── TBD...

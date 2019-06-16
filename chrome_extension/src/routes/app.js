@@ -18,7 +18,42 @@ const getSimpleLocation = function (href) {
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      elementsLoading: false,
+    }
   }
+
+  renderAddedElements = () => {
+    const {app, dispatch} = this.props;
+    if (this.state.elementsLoading) return <div className={styles.body}><Spin/></div>;
+    return <div className={styles.body}>
+      {app.selectors.map((selector, index) => {
+        const tag = `#${selector.tagId}-${getSimpleLocation(selector.location)}`;
+        const isLongTag = tag.length > 12;
+        const tagText = isLongTag ? `${tag.slice(0, 12)}...` : tag;
+        const tagElem = (
+          <Tag key={index}
+               closable
+               afterClose={() => {
+                 const selectors = app.selectors;
+                 const selectorIndex = _.findIndex(selectors, {tagId: selectors.tagId});
+                 selectors.splice(selectorIndex, 1);
+                 console.log('removed :', selectors);
+                 dispatch({
+                   type: 'app/updateState',
+                   payload: {
+                     selectors,
+                   },
+                 });
+               }}>
+            {tagText}
+          </Tag>
+        );
+        return isLongTag ?
+          <Tooltip title={`#${selector.tagId}-${selector.location}`} key={index}>{tagElem}</Tooltip> : tagElem;
+      })}
+    </div>
+  };
 
   render() {
     const {app, dispatch} = this.props;
@@ -44,32 +79,7 @@ class App extends React.Component {
           <div className={styles.header}>
             <div className={styles.title}>Added elements</div>
           </div>
-          <div className={styles.body}>
-            {app.selectors.map((selector, index) => {
-              const tag = `#${selector.tagId}-${getSimpleLocation(selector.location)}`;
-              const isLongTag = tag.length > 12;
-              const tagText = isLongTag ? `${tag.slice(0, 12)}...` : tag;
-              const tagElem = (
-                <Tag key={index}
-                     // onClick={ () => window.open(selector.location)}
-                     closable
-                     afterClose={() => {
-                       const selectors = _.cloneDeep(app.selectors);
-                       _.pullAt(selectors, [index]);
-                       dispatch({
-                         type: 'app/updateState',
-                         payload: {
-                           selectors,
-                         },
-                       });
-                     }}>
-                  {tagText}
-                </Tag>
-              );
-              return isLongTag ?
-                <Tooltip title={`#${selector.tagId}-${selector.location}`} key={index}>{tagElem}</Tooltip> : tagElem;
-            })}
-          </div>
+          {this.renderAddedElements()}
         </div>
         <div className={styles.section}>
           <div className={styles.header}>
@@ -112,7 +122,8 @@ class App extends React.Component {
           </div>
           <div className={styles.code}>
             {app.code ? <Highlight language="python">{app.code}</Highlight> :
-              <Empty style={{marginTop: '15px'}} image={chrome.extension.getURL('img/icon-128.png')} description="Something went wrong"/>}
+              <Empty style={{marginTop: '15px'}} image={chrome.extension.getURL('img/icon-128.png')}
+                     description="Something went wrong"/>}
           </div>
         </div>
       </div>
