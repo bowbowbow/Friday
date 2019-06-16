@@ -1,11 +1,13 @@
 import $ from 'jquery';
 import finder from '@medv/finder';
 import _ from 'lodash';
-import { addStyle } from './addStyle';
-import { initMessage, showMessage, hideMessage } from './info';
-import { copyToClipboard } from './clipboard';
+const clearEl = el => el && el.classList.remove('fd_hover');
 
-const clearEl = el => el && el.classList.remove('gs_hover');
+export const addStyle = style => {
+  const styleTag = document.createElement('style');
+  styleTag.innerHTML = style;
+  document.head.appendChild(styleTag);
+};
 
 export const toggle = (global, power) => {
   const state = !global.state;
@@ -16,10 +18,9 @@ export const toggle = (global, power) => {
 
   if (!power) {
     clearEl(global.selectedEl);
-    global.copiedEl && global.copiedEl.classList.remove('gs_copied');
-    hideMessage(global);
+    global.copiedEl && global.copiedEl.classList.remove('fd_copied');
     $('.Friday').remove();
-    $('.gs_copied').removeClass('gs_copied');
+    $('.fd_copied').removeClass('fd_copied');
   }
 };
 
@@ -36,7 +37,6 @@ export const init = (global, state) => {
     const selectedEl$ = $(selector);
     const position = selectedEl$.offset();
 
-
     if (!position) {
       console.error('[There is no saved element] tagId :', tagId, ', selector :', selector);
       return;
@@ -49,14 +49,13 @@ export const init = (global, state) => {
     <img class="Friday Friday-cancel-${tagId}" data-selector="${selector}" data-index="${tagId}" src="${chrome.extension.getURL('img/cancel.png')}" style="width: 19px; height: 19px; object-fit: cover; position: absolute; right: -22px; top: 1px; cursor: pointer;"/>
   </div>
 </div>`);
-
-    selectedEl$.addClass('gs_copied');
+    selectedEl$.addClass('fd_copied');
 
     $(`.Friday-cancel-${tagId}`).click(function() {
       const index = $(this).attr('data-index');
       const selector = $(this).attr('data-selector');
 
-      $(selector).removeClass('gs_copied');
+      $(selector).removeClass('fd_copied');
       $(`.Friday-tooltip-${index}`).remove();
 
       let selectors = state.selectors;
@@ -77,7 +76,7 @@ export const init = (global, state) => {
 
   let insertIndex = 0;
   $('.Friday').remove();
-  $('.gs_copied').removeClass('.gs_copied');
+  $('.fd_copied').removeClass('.fd_copied');
   const selectors = state.selectors;
   const location = window.location.href;
   for (let i = 0; i < selectors.length; i++) {
@@ -95,18 +94,7 @@ export const init = (global, state) => {
     const selectedEl = global.selectedEl;
 
     if (selectedEl.classList.value.indexOf('Friday') >= 0) return;
-    selectedEl.classList.add('gs_hover');
-
-    const name = selectedEl.nodeName.toLowerCase();
-    const id = selectedEl.id ? '#' + selectedEl.id : '';
-    const className = selectedEl.className.replace
-      ? selectedEl.className
-      .replace('gs_hover', '')
-      .trim()
-      .replace(/ /gi, '.')
-      : '';
-    const message = name + id + (className.length > 0 ? '.' + className : '');
-    showMessage(global, message);
+    selectedEl.classList.add('fd_hover');
   }, 200);
 
   global.addSelector = () => {
@@ -138,14 +126,13 @@ export const init = (global, state) => {
   };
 
   addStyle(`
-    .gs_hover {
-      background: repeating-linear-gradient( 135deg, rgba(225, 225, 226, 0.3), rgba(229, 229, 229, 0.3) 10px, rgba(173, 173, 173, 0.3) 10px, rgba(172, 172, 172, 0.3) 20px );
+    .fd_hover {
+      background: repeating-linear-gradient( 150deg, rgba(225, 225, 225, 0.3), rgba(229, 229, 229, 0.3) 10px, rgba(173, 173, 173, 0.3) 10px, rgba(172, 172, 172, 0.3) 20px );
       box-shadow: inset 0px 0px 0px 1px #d7d7d7;
     }
-    .gs_copied {
-      background: repeating-linear-gradient( 135deg, rgba(183, 240, 200, 0.3), rgba(192, 231, 194, 0.3) 10px, rgba(124, 189, 126, 0.3) 10px, rgba(137, 180, 129, 0.3) 20px ) !important;
-      box-shadow: inset 0px 0px 0px 1px #c4d9c2 !important;      
+    .fd_copied {
+      background: repeating-linear-gradient( 150deg, rgba(225, 225, 225, 0.3), rgba(229, 229, 229, 0.3) 10px, rgba(173, 173, 173, 0.3) 10px, rgba(172, 172, 172, 0.3) 20px );
+      box-shadow: inset 0px 0px 0px 1px #cc0035 !important;      
     }
   `);
-  initMessage(global);
 };
