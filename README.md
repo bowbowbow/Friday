@@ -1,7 +1,4 @@
 # Friday
-Friday is a Chrome extension that automatically transforms test scenarios written in natural language into selenium code.
-
-<img src="https://github.com/bowbowbow/Friday/blob/master/samples/sample1/run_screenshot1.jpg" width="712">
 
 This is the project implementation of team 5 for KAIST, CS453 Automated Software Testing, Spring 2019.
 
@@ -176,3 +173,9 @@ Friday/
   # check if "Robert Downey" is on the page .
   assert "Robert Downey" in driver.page_source  
   ```
+
+## Chrome Extension
+
+A Chrome Extension provides UI to easily find the selectors and transform test scenarios written in natural language into selenium code.
+
+<img src="https://github.com/bowbowbow/Friday/blob/master/samples/sample1/run_screenshot1.jpg" width="712">
