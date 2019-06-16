@@ -36,10 +36,12 @@ export const init = (global, state) => {
     const selectedEl$ = $(selector);
     const position = selectedEl$.offset();
 
+
     if (!position) {
       console.error('[There is no saved element] tagId :', tagId, ', selector :', selector);
       return;
     }
+
     $('body').append(`
 <div class="Friday Friday-tooltip-${tagId}" style="position: absolute; left: ${position.left}px; top: ${position.top - 24}px; z-index: 2100000000;">
   <div class="Friday" style="position:relative;">

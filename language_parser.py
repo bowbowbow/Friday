@@ -57,15 +57,24 @@ def sent2clauses(sent, parser):
     for clause in clauses:
         clause = clause.strip()
         new_clause = []
+        is_in_quote = False
         for tok in clause.split():
-            if not check_user_generated_keyword(tok):
-                tok = tok.lower()
+            if '"' in tok or '“' in tok or '”' in tok:
+                if tok.count('"') + tok.count('“') + tok.count('”') == 1:
+                    assert tok[0] in '"“”' or tok[-1] in '"“”'
+                elif tok.count('"') + tok.count('“') + tok.count('”') == 2:
+                    assert (tok[0] == '"' and tok[-1] == '"') or (tok[0] == '“' and tok[-1] == '”')
+                else:
+                    raise ValueError
+            if tok[0] in '"“': is_in_quote = not is_in_quote
+            if not is_in_quote: tok = tok.lower()
+            if tok[-1] in '"”': is_in_quote = not is_in_quote
             new_clause.append(tok)
         new_clauses.append(new_clause)
-
+    print("FINAL CLAUSES: {}".format(new_clauses))
     new_clauses = [' '.join(clause) for clause in new_clauses]
     new_clauses = [clause + ' .' if clause[-1] != '.' else clause[:-1] + ' .' for clause in new_clauses]
-
+    print("RETURN CLAUSES: {}".format(new_clauses))
     return new_clauses
 
 
@@ -95,8 +104,10 @@ def find_function_argument(func, allennlp):
         func("Func" class): custom-class with assigned function type
     Output:
     """
-    print(func.raw_clause)
-    res = allennlp.predict(func.raw_clause)
+    #print(func.raw_clause)
+    tmp_raw_clause = func.raw_clause[0].upper() + func.raw_clause[1:]
+    print("INPUT of ALLEN: ", tmp_raw_clause)
+    res = allennlp.predict(tmp_raw_clause)
     print(res)
     # TODO: Think about the issue that one verb per one clause is okay or not?
     # Has one verb and it should be same with prevous verb
@@ -107,9 +118,10 @@ def find_function_argument(func, allennlp):
         assert func.func_name == 'contain_value'
         res['verbs'] = [res['verbs'][0]]
 
-    assert res['verbs'][0]['verb'] == func.func_word
+    assert res['verbs'][0]['verb'].lower() == func.func_word
     words, tags = res['words'], res['verbs'][0]['tags']
     assert len(words) == len(tags)
+    words[0] = words[0].lower()
     parsed = parse_allen_tag(words, tags)
     pprint(parsed)
     func.find_func_target(parsed)
@@ -234,7 +246,7 @@ def api_main():
           "tagId": 2
         }
       ],
-        "text": 'enter the "KAIST" to the #1.'}]
+        "text": 'Open the "https://google.com" and enter the "Iron Man" on #1. Click the #2. Check if "Robert Downey jr" is in the page.'}]
 
     run_selenium, use_corenlp, pathsaver ,nlp, allennlp = get_api_daemon_object()
 

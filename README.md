@@ -12,9 +12,9 @@ This project is being developed in Python 3.6.
 1. Install the required dependencies.
 
    ```
-   pip install numpy torch allennlp nltk stanfordcorenlp stanfordcorenlp
-   ```
    
+   pip install numpy torch allennlp nltk stanfordcorenlp
+   ```
 2. Download [glove](https://nlp.stanford.edu/projects/glove/).
 
    ```bash
@@ -25,7 +25,7 @@ This project is being developed in Python 3.6.
    ```
    
 3. [Download chromedriver](http://chromedriver.chromium.org/downloads) with your Chrome version and locate into `/dat` directory. 
-    
+   
 4. (Optional) Download stanfordcorenlp model.
 
     ```bash

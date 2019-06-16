@@ -115,7 +115,8 @@ class Func:
         if self.func_name == 'click':
             pass
         elif self.func_name == 'wait':
-            self.arguments_list.append(parsed['ARGM-TMP'])
+            arg = parsed['ARGM-TMP'] if 'ARGM-TMP' in parsed else parsed['ARG1']
+            self.arguments_list.append(arg)
         elif self.func_name == 'write':
             arg = parsed['ARG1'] if 'ARG1' in parsed else parsed['ARG0']
             self.arguments_list.append(arg)
@@ -148,6 +149,7 @@ class Func:
         if self.func_name == 'click':
             if self.run_selenium: func = driver.find_element_by_css_selector(element_id).click
             self.code_string += 'try:\n    driver.find_element_by_css_selector("{}").click()\nexcept:\n    driver.execute_script("arguments[0].click();", driver.find_element_by_css_selector("{}"))'.format(element_id, element_id)
+
         elif self.func_name == 'wait':
             if self.run_selenium: func = time.sleep
             args = argument
