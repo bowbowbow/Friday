@@ -12,7 +12,6 @@ This project is being developed in Python 3.6.
 1. Install the required dependencies.
 
    ```
-   
    pip install numpy torch allennlp nltk stanfordcorenlp
    ```
 2. Download [glove](https://nlp.stanford.edu/projects/glove/).
@@ -40,23 +39,24 @@ This project is being developed in Python 3.6.
 python language_parser.py
 ```
 
-## Package Structure
+## Prject Structure
 
 Below is the overview of directory structure.
 
 ```text
 Friday/
-├── chrome_extension
-│     └── TBD...
-│     └── TBD...
-│          └── TBD...
-│
 ├── output
 │     └── testfile_#.py
 │
 ├── dat/
 │     └── chromedriver.exe
 │     └── glove.6B.200d.txt
+│
+├── chrome_extension
+│     └── webpack # settings for build 
+│     └── scripts # scripts for build 
+│     └── chrome # settings for chrome extension
+│     └── src # reactjs app for popup
 │
 ├── func.py
 ├── language_parser.py  # language2selenium main function
