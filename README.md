@@ -52,11 +52,11 @@ Friday/
 │     └── chromedriver.exe
 │     └── glove.6B.200d.txt
 │
-├── chrome_extension
-│     └── webpack # settings for build 
-│     └── scripts # scripts for build 
-│     └── chrome # settings for chrome extension
-│     └── src # reactjs app for popup
+├── chrome_extension/
+│     └── webpack/ # settings for build 
+│     └── scripts/ # scripts for build 
+│     └── chrome/ # settings for chrome extension
+│     └── src/ # reactjs app for popup
 │
 ├── func.py
 ├── language_parser.py  # language2selenium main function
