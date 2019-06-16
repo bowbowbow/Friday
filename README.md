@@ -179,3 +179,8 @@ Friday/
 A Chrome Extension provides UI to easily find the selectors and transform test scenarios written in natural language into selenium code.
 
 <img src="https://github.com/bowbowbow/Friday/blob/master/samples/sample1/run_screenshot1.jpg" width="712">
+
+### References
+
+- jhen0409's [react-chrome-extension-boilerplate](https://github.com/jhen0409/react-chrome-extension-boilerplate)
+- AntonLapshin's [getselector](https://github.com/AntonLapshin/getselector)
