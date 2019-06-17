@@ -36,7 +36,7 @@ This project is being developed in Python 3.6.
 python language_parser.py
 ```
 
-## Prject Structure
+## Project Structure
 
 Below is the overview of directory structure.
 
@@ -178,7 +178,7 @@ Friday/
 
 A Chrome Extension provides UI to easily find the selectors and transform test scenarios written in natural language into selenium code.
 
-<img src="https://github.com/bowbowbow/Friday/blob/master/samples/sample1/run_screenshot1.jpg" width="712">
+<img src="https://github.com/bowbowbow/Friday/blob/master/samples/sample1/screenshot.jpg" width="712">
 
 ### Usage
 

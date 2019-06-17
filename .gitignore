@@ -15,3 +15,6 @@ chrome_extension/build/
 chrome_extension/dev/
 chrome_extension/node_modules/
 chrome_extension/package-lock.json
+
+chrome_extension/dev/.DS_Store
+chrome_extension/.DS_Store
