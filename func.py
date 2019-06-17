@@ -7,11 +7,11 @@ import numpy as np
 class KeywordManager:
     def __init__(self):
         self.func2keyword = {
-            'click':['click', 'touch'],
+            'click':['click', 'touch', 'press'],
             'wait':['wait', 'sleep'],
-            'write':['enter', 'put', 'write'],
+            'write':['enter', 'put', 'write', 'feed', 'input'],
             'contain_value': ['have', 'has', 'contain', 'check'],
-            'refresh':['refresh'],
+            'refresh':['refresh', 'reload'],
             'move_url': ['go', 'move', 'open']
         }
         self.keyword_list = [el for li in self.func2keyword.values() for el in li]
