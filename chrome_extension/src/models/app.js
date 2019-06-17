@@ -12,7 +12,7 @@ export default {
     power: false,
     selectors: [],
     warning: '',
-    text: 'open the "https://google.com" and wait the "3 seconds".',
+    text: 'Enter the "Iron man" in #1 and click the #2. Wait the "3 seconds" and Check if "Robert Downey" is on the page.',
     code: '',
     loading: false,
   },

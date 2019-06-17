@@ -193,7 +193,12 @@ npm run dev
 
 # Build
 npm run build
+
+# Run Text2Selenium Server
+python server.py
 ```
+
+
 
 ### References
 
