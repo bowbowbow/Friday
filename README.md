@@ -198,7 +198,7 @@ npm run build
 python server.py
 ```
 
-
+You can download Friday Chrome Extension [here](https://github.com/bowbowbow/Friday/archive/1.0.zip)
 
 ### References
 
