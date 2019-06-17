@@ -12,6 +12,6 @@ browser_extension/node_modules/
 browser_extension/package-lock.json
 
 chrome_extension/build/
-chrome_extension/dev/git rm . -r --cached
+chrome_extension/dev/
 chrome_extension/node_modules/
 chrome_extension/package-lock.json
