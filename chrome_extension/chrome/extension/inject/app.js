@@ -127,11 +127,11 @@ export const init = (global, state) => {
 
   addStyle(`
     .fd_hover {
-      background: repeating-linear-gradient( 150deg, rgba(225, 225, 225, 0.3), rgba(229, 229, 229, 0.3) 10px, rgba(173, 173, 173, 0.3) 10px, rgba(172, 172, 172, 0.3) 20px );
-      box-shadow: inset 0px 0px 0px 1px #d7d7d7;
+      background: rgba(225, 225, 225, 0.3) !important;
+      box-shadow: inset 0px 0px 0px 1px #EEE;
     }
     .fd_copied {
-      background: repeating-linear-gradient( 150deg, rgba(225, 225, 225, 0.3), rgba(229, 229, 229, 0.3) 10px, rgba(173, 173, 173, 0.3) 10px, rgba(172, 172, 172, 0.3) 20px );
+      background: rgba(225, 225, 225, 0.3);
       box-shadow: inset 0px 0px 0px 1px #cc0035 !important;      
     }
   `);
